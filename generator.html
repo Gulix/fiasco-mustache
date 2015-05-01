@@ -14,33 +14,55 @@
  <div id='core' />
  </body>
  <script>
-$( "#btnGen" ).click(function() {
 
-  var view = {
-		title: $('#tbTitre').val()
-	};
-  var output = Mustache.render("Contenu {{title}} : ça marche ?", view);
-  var blob = new Blob([output], {type: "text/plain;charset=utf-8"});
-  saveAs(blob, "generated.txt");
-});
 
 /* Rendering functions */
-function render_category(category)
+function render_sections()
 {
   var view = {
-    category: category,
-    details: []
+    sections: []
   };
-  for(var i=1; i<=6; i++) {
-    view.details.push(i);
+  for(var iSection=1; iSection<=4; iSection++) {
+    var section = {
+      categories: [],
+      sectionIdx: iSection
+    };
+    for(var iCategory=1; iCategory<=6; iCategory++)
+    {
+      var category = {
+        details: [],
+        categoryIdx: iCategory
+      };
+      for(var iDetail=1; iDetail<=6; iDetail++)
+      {
+        category.details.push(iDetail);
+      }
+      section.categories.push(category);
+    }
+    
+    view.sections.push(section);
   }
   
-  return Mustache.render("<div class='categoryTitle'><img src='dice{{category}}.png' class='categoryDice' /> <input id='cat{{category}}' type='text' class='categoryTextInput' /></div>"
-                        + "{{#details}}<div class='categoryDetail'><img src='dice{{.}}.png' class='categoryDetailDice' /> <input id='cat{{category}}_detail{{.}}' type='text' class='categoryDetailTextInput' /></div>{{/details}}", view);
+  return Mustache.render("{{#sections}}<div class='section'>" +
+                             "<div class='sectionTitle'>" +
+                                 "<input id='section{{sectionIdx}}' type='text' class='sectionTextInput' />" +
+                             "</div>" +
+                             "{{#categories}}<div class='category'>" +
+                                 "<div class='categoryTitle'>" + 
+                                     "<img src='dice{{categoryIdx}}.png' class='categoryDice' />" +
+                                     "<input id='sec{{sectionIdx}}_cat{{categoryIdx}}' type='text' class='categoryTextInput' />" +
+                                 "</div>" +
+                                 "{{#details}}<div class='categoryDetail'>" +
+                                     "<img src='dice{{.}}.png' class='categoryDetailDice' />" + 
+                                     "<input id='sec{{sectionIdx}}_cat{{categoryIdx}}_detail{{.}}' type='text' class='categoryDetailTextInput' />" +
+                                 "</div>{{/details}}" +
+                             "</div>{{/categories}}" +
+                         "</div>{{/sections}}"
+                         , view);
 }
 
 $(function() {
-  $("#core").html(render_category(1));
+  $("#core").html(render_sections());
 });
   </script>
 </html>
