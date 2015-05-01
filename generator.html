@@ -1,21 +1,25 @@
 <html>
  <head>
-   <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css" />
    <link rel="stylesheet" href="style.css" />
-   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
    <script src="mustache.js"></script>
    <script src="FileSaver.min.js"></script>
   
-   <meta name="viewport" content="width=device-width, initial-scale=1" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+   <link href="css/bootstrap.min.css" rel="stylesheet" media="screen" />
  </head>
 <body>
-  <div class="selection_section">
-    <a class="pure-button pure-button-active" href="#" id="select_section_1">Section #1</a>
-    <a class="pure-button pure-button-active" href="#" id="select_section_2">Section #2</a>
-    <a class="pure-button pure-button-active" href="#" id="select_section_3">Section #3</a>
-    <a class="pure-button pure-button-active" href="#" id="select_section_4">Section #4</a>
-  </div>
- <div id='core' />
+  <div class="container">
+    <ul class="nav nav-tabs">
+      <li class="active"><a href="#" id="select_section_1">Section #1</a></li>
+      <li><a href="#" id="select_section_2">Section #2</a></li>
+      <li><a href="#" id="select_section_3">Section #3</a></li>
+      <li><a href="#" id="select_section_4">Section #4</a></li>
+    </ul>
+   <div id='core' />
+ 
+ </div>
+    <script src="http://code.jquery.com/jquery.js"></script>
+    <script src="js/bootstrap.min.js"></script>
  </body>
  <script>
 
@@ -48,18 +52,22 @@ function render_sections()
   }
   
   return Mustache.render("{{#sections}}<div class='section' id='section{{sectionIdx}}'>" +
-                             "<div class='sectionTitle'>" +
-                                 "<input id='section{{sectionIdx}}' type='text' class='sectionTextInput' />" +
+                             "<div class='sectionTitle row'>" +
+                                 "<div class='span12'><input id='section{{sectionIdx}}' type='text' class='sectionTextInput' /></div>" +
                              "</div>" +
                              "{{#categories}}<div class='category'>" +
-                                 "<div class='categoryTitle'>" + 
-                                     "<img src='dice{{categoryIdx}}.png' class='categoryDice' />" +
-                                     "<input id='sec{{sectionIdx}}_cat{{categoryIdx}}' type='text' class='categoryTextInput' />" +
-                                     "<div class='category_showhide'> - </div>" +
+                                 "<div class='categoryTitle row'>" + 
+                                     "<div class='span6'>" +
+                                         "<img src='dice{{categoryIdx}}.png' class='categoryDice' />" +
+                                         "<input id='sec{{sectionIdx}}_cat{{categoryIdx}}' type='text' class='categoryTextInput' />" +
+                                     "</div>" +
+                                     "<div class='span2'><a class='btn category_showhide' href='#'><i class='icon-chevron-down'></i>Hide</a></div>" +
                                  "</div>" +
-                                 "{{#details}}<div class='categoryDetail'>" +
-                                     "<img src='dice{{.}}.png' class='categoryDetailDice' />" + 
-                                     "<input id='sec{{sectionIdx}}_cat{{categoryIdx}}_detail{{.}}' type='text' class='categoryDetailTextInput' />" +
+                                 "{{#details}}<div class='categoryDetail row'>" +
+                                     "<div class='span5 offset1'>" +
+                                         "<img src='dice{{.}}.png' class='categoryDetailDice' />" + 
+                                         "<input id='sec{{sectionIdx}}_cat{{categoryIdx}}_detail{{.}}' type='text' class='categoryDetailTextInput' />" +
+                                     "</div>" +
                                  "</div>{{/details}}" +
                              "</div>{{/categories}}" +
                          "</div>{{/sections}}"
@@ -71,15 +79,18 @@ function click_section(sectionIdx)
   for(var iSection=1; iSection<=4; iSection++)
   {
     var sectionName = '#section' + iSection;
+    var sectionTab = '#select_section_' + iSection;
     if (iSection == sectionIdx)
     {
       // Showing the section
       $(sectionName).show();
+      $(sectionTab).parent().addClass('active');
     }
     else 
     {
       // Hiding the section
       $(sectionName).hide();
+      $(sectionTab).parent().removeClass('active');
     }
   }
 }
@@ -95,7 +106,15 @@ $(function() {
     }
   click_section(1);
   $('.category_showhide').click(function() {
-    $(this).parent().siblings('.categoryDetail').hide();
+    var isMasquer = $(this).children('i').hasClass('icon-chevron-down');
+    if (isMasquer) {
+        $(this).parent().parent().siblings('.categoryDetail').hide();
+        $(this).html("<i class='icon-chevron-up'></i>Display");  
+    } else {
+        $(this).parent().parent().siblings('.categoryDetail').show();
+        $(this).html("<i class='icon-chevron-down'></i>Hide");  
+    }
+    
   });
   
 });
