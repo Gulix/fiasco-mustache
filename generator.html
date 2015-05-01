@@ -9,8 +9,12 @@
    <meta name="viewport" content="width=device-width, initial-scale=1" />
  </head>
 <body>
- <input id="tbTitre" type="text" />
- <input id="btnGen" type="submit" />
+  <div class="selection_section">
+    <a class="pure-button pure-button-active" href="#" id="select_section_1">Section #1</a>
+    <a class="pure-button pure-button-active" href="#" id="select_section_2">Section #2</a>
+    <a class="pure-button pure-button-active" href="#" id="select_section_3">Section #3</a>
+    <a class="pure-button pure-button-active" href="#" id="select_section_4">Section #4</a>
+  </div>
  <div id='core' />
  </body>
  <script>
@@ -43,7 +47,7 @@ function render_sections()
     view.sections.push(section);
   }
   
-  return Mustache.render("{{#sections}}<div class='section'>" +
+  return Mustache.render("{{#sections}}<div class='section' id='section{{sectionIdx}}'>" +
                              "<div class='sectionTitle'>" +
                                  "<input id='section{{sectionIdx}}' type='text' class='sectionTextInput' />" +
                              "</div>" +
@@ -61,8 +65,35 @@ function render_sections()
                          , view);
 }
 
+function click_section(sectionIdx)
+{
+  for(var iSection=1; iSection<=4; iSection++)
+  {
+    var sectionName = '#section' + iSection;
+    if (iSection == sectionIdx)
+    {
+      // Showing the section
+      $(sectionName).show();
+    }
+    else 
+    {
+      // Hiding the section
+      $(sectionName).hide();
+    }
+  }
+}
+
 $(function() {
   $("#core").html(render_sections());
+  
+  for (var iSection = 1; iSection<=4; iSection++) {
+        var selector = "#select_section_" + iSection;
+        $(selector).on('click', {id: iSection}, function (e) {
+            click_section(e.data.id);
+        });
+    }
+  click_section(1);
+  
 });
   </script>
 </html>
