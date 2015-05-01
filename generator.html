@@ -55,6 +55,7 @@ function render_sections()
                                  "<div class='categoryTitle'>" + 
                                      "<img src='dice{{categoryIdx}}.png' class='categoryDice' />" +
                                      "<input id='sec{{sectionIdx}}_cat{{categoryIdx}}' type='text' class='categoryTextInput' />" +
+                                     "<div class='category_showhide'> - </div>" +
                                  "</div>" +
                                  "{{#details}}<div class='categoryDetail'>" +
                                      "<img src='dice{{.}}.png' class='categoryDetailDice' />" + 
@@ -93,6 +94,9 @@ $(function() {
         });
     }
   click_section(1);
+  $('.category_showhide').click(function() {
+    $(this).parent().siblings('.categoryDetail').hide();
+  });
   
 });
   </script>
