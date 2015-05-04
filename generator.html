@@ -25,8 +25,8 @@
      <!-- Generation by Mustache of the playset with the help of a template -->
      <div id='section90' class='section'>
         <div class='row'><p class='span12'>Mustache template to use for the generation</p></div>
-        <div class='row'><div class='span10 offset1'><textarea style='width:100%' rows='15' placeholder='Mustache template' required></textarea></div></div>
-        <div class='row'><button type="button" class="btn btn-primary offset8 span4">Generate !</button></div>
+        <div class='row'><div class='span10 offset1'><textarea id='mustache_template' style='width:100%' rows='15' placeholder='Mustache template' required></textarea></div></div>
+        <div class='row'><button type="button" id='generate_button' class="btn btn-primary offset8 span4">Generate !</button></div>
      </div>
    </div>
  
@@ -110,6 +110,16 @@ function click_section(sectionIdx)
   }
 }
 
+function generate_mustache()
+{
+  // The mustache template
+  var mustacheTemplate = $('#mustache_template').val();
+  var jsonData = {"test": 'test' };
+
+  var blob = new Blob([Mustache.render(mustacheTemplate, jsonData)], {type: "text/plain;charset=utf-8"});
+  saveAs(blob, "hello world.txt");
+}
+
 $(function() {
   $("#core").append(render_sections());
   
@@ -122,6 +132,8 @@ $(function() {
         });
     }
   click_section(0);
+  
+  // Click-events on the 'Display/Hide' buttons inside the Dice sections
   $('.category_showhide').click(function() {
     var isMasquer = $(this).children('i').hasClass('icon-chevron-up');
     if (isMasquer) {
@@ -130,8 +142,12 @@ $(function() {
     } else {
         $(this).parent().parent().siblings('.categoryDetail').show();
         $(this).html("<i class='icon-chevron-up'></i>Hide");  
-    }
-    
+    }    
+  });
+  
+  // Click on the Generate button
+  $('#generate_button').click(function() {
+    generate_mustache();
   });
   
 });
