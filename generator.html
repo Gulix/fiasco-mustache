@@ -67,7 +67,7 @@ function render_sections()
   // Render the four "dice" sections, all the same
   return Mustache.render("{{#sections}}<div class='section' id='section{{sectionIdx}}'>" +
                              "<div class='sectionTitle row'>" +
-                                 "<div class='span12'><input id='section{{sectionIdx}}' type='text' class='sectionTextInput' /></div>" +
+                                 "<div class='span12'><input id='sec{{sectionIdx}}' type='text' class='sectionTextInput' /></div>" +
                              "</div>" +
                              "{{#categories}}<div class='category'>" +
                                  "<div class='categoryTitle row'>" + 
@@ -110,11 +110,39 @@ function click_section(sectionIdx)
   }
 }
 
+function get_generated_json()
+{
+  var jsonData = { };
+  
+  // Tables of elements
+  jsonData.sections = [];
+  // Each section
+  for(var iSection = 1; iSection <= 4; iSection++) {
+      var jsonSection = { libelle: $('#sec'+iSection).val() };
+      jsonSection.categories = [];
+      // Each category
+      for (var iCategory = 1; iCategory <= 6; iCategory++) {
+          var jsonCategory = { libelle: $('#sec' + iSection + '_cat' + iCategory).val() };
+          jsonCategory.details = [];
+          // Each detail
+          for (var iDetail = 1; iDetail <= 6; iDetail++) {
+              jsonCategory.details[iDetail - 1] = { libelle: $('#sec' + iSection + '_cat' + iCategory + '_detail' + iDetail).val() };              
+          }
+          jsonSection.categories[iCategory - 1] = jsonCategory;
+      }
+      jsonData.sections[iSection-1] = jsonSection;
+  }
+  
+  // All elements with a single property
+  
+  return jsonData;
+}
+
 function generate_mustache()
 {
   // The mustache template
   var mustacheTemplate = $('#mustache_template').val();
-  var jsonData = {"test": 'test' };
+  var jsonData = get_generated_json();
 
   var blob = new Blob([Mustache.render(mustacheTemplate, jsonData)], {type: "text/plain;charset=utf-8"});
   saveAs(blob, "hello world.txt");
