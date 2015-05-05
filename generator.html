@@ -207,7 +207,22 @@ function load_from_json(jsonData)
                   jsonData.sections[iSection-1].categories[iCategory-1].details[iDetail-1].libelle);
           }
       }
-  }
+    }
+    update_section_labels();
+}
+
+function update_section_labels()
+{
+   for(var iSection=1; iSection <= 4; iSection++)
+   {
+      // The section designation goes to the tab
+      var designation = $('#sec'+iSection).val();
+      if (designation.length == 0) {
+          $('#select_section_' + iSection).html('Section #' + iSection);
+      } else {
+          $('#select_section_' + iSection).html(designation);
+      }
+   }
 }
 
 $(function() {
@@ -240,6 +255,11 @@ $(function() {
   $("#loadjson_button").click(function () { $("#file-load").click(); });
   $("#file-load").change(load_files);  
   $('#savejson_button').click(function() { save_json(); });
+  
+  // Focus out of the sections name input
+  for(var iSection=1; iSection <= 4; iSection++) {
+      $('#sec' + iSection).focusout(function() { update_section_labels(); });
+  }
   
 });
   </script>
