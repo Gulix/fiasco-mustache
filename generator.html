@@ -1,11 +1,11 @@
 <html>
  <head>
-   <link rel="stylesheet" href="style.css" />
    <script src="mustache.js"></script>
    <script src="FileSaver.min.js"></script>
   
    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen" />
+   <link rel="stylesheet" href="style.css" />
  </head>
 <body>
   <div class="container">
@@ -26,11 +26,11 @@
             <form style="display:none" id="file-load-form">
                 <input type="file" id="file-load" name="files[]" multiple class="form-control" style="display:none" />
             </form>
-            <button type="button" id='loadjson_button' class="btn btn-default offset6 span3">Load JSON</button>
-            <button type="button" id='savejson_button' class="btn btn-default span3">Save JSON</button>
+            <button type="button" id='loadjson_button' class="btn btn-default col-md-offset-6 col-md-3">Load JSON</button>
+            <button type="button" id='savejson_button' class="btn btn-default col-md-3">Save JSON</button>
          </div>
          <div class='row'>
-             <div class="form-group span12">
+             <div class="form-group col-md-12">
                 <label for="input_title">Title</label>
                 <input type="text" class="form-control" id="input_title" placeholder="Playset title">
              </div>
@@ -42,9 +42,9 @@
      
      <!-- Generation by Mustache of the playset with the help of a template -->
      <div id='section90' class='section'>
-        <div class='row'><p class='span12'>Mustache template to use for the generation</p></div>
-        <div class='row'><div class='span10 offset1'><textarea id='mustache_template' style='width:100%' rows='15' placeholder='Mustache template' required></textarea></div></div>
-        <div class='row'><button type="button" id='generate_button' class="btn btn-primary offset8 span4">Generate !</button></div>
+        <div class='row'><p class='col-md-12'>Mustache template to use for the generation</p></div>
+        <div class='row'><div class='col-md-10 col-md-offset-1'><textarea id='mustache_template' style='width:100%' rows='15' placeholder='Mustache template' required></textarea></div></div>
+        <div class='row'><button type="button" id='generate_button' class="btn btn-primary col-md-offset-8 col-md-4">Generate !</button></div>
      </div>
    </div>
  
@@ -85,20 +85,23 @@ function render_sections()
   // Render the four "dice" sections, all the same
   return Mustache.render("{{#sections}}<div class='section' id='section{{sectionIdx}}'>" +
                              "<div class='sectionTitle row'>" +
-                                 "<div class='span12'><input id='sec{{sectionIdx}}' type='text' class='sectionTextInput' /></div>" +
+                                 "<div class='col-md-12 form-group'>" +
+                                    "<label for='sec{{sectionIdx}}'>Section designation</label>" +
+                                    "<input id='sec{{sectionIdx}}' type='text' class='form-control' />" +
+                                 "</div>" +
                              "</div>" +
                              "{{#categories}}<div class='category'>" +
                                  "<div class='categoryTitle row'>" + 
-                                     "<div class='span6'>" +
-                                         "<img src='dice{{categoryIdx}}.png' class='categoryDice' />" +
-                                         "<input id='sec{{sectionIdx}}_cat{{categoryIdx}}' type='text' class='categoryTextInput' />" +
+                                     "<div class='dice-category dice{{categoryIdx}} col-md-offset-2 col-md-6'>" +
+                                         "<input id='sec{{sectionIdx}}_cat{{categoryIdx}}' type='text' class='form-control' />" +
                                      "</div>" +
-                                     "<div class='span2'><a class='btn category_showhide' href='#'><i class='icon-chevron-up'></i>Hide</a></div>" +
+                                     "<div class='col-md-2'><a class='btn btn-default category_showhide' href='#'>" + 
+                                         "<span class='glyphicon glyphicon-chevron-up' aria-hidden='true'></span>Hide" +
+                                     "</a></div>" +
                                  "</div>" +
                                  "{{#details}}<div class='categoryDetail row'>" +
-                                     "<div class='span5 offset1'>" +
-                                         "<img src='dice{{.}}.png' class='categoryDetailDice' />" + 
-                                         "<input id='sec{{sectionIdx}}_cat{{categoryIdx}}_detail{{.}}' type='text' class='categoryDetailTextInput' />" +
+                                     "<div class='col-md-5 col-md-offset-3 dice-detail dice{{.}}'>" +
+                                         "<input id='sec{{sectionIdx}}_cat{{categoryIdx}}_detail{{.}}' type='text' class='form-control' />" +
                                      "</div>" +
                                  "</div>{{/details}}" +
                              "</div>{{/categories}}" +
@@ -222,13 +225,13 @@ $(function() {
   
   // Click-events on the 'Display/Hide' buttons inside the Dice sections
   $('.category_showhide').click(function() {
-    var isMasquer = $(this).children('i').hasClass('icon-chevron-up');
+    var isMasquer = $(this).children('span').hasClass('glyphicon-chevron-up');
     if (isMasquer) {
         $(this).parent().parent().siblings('.categoryDetail').hide();
-        $(this).html("<i class='icon-chevron-down'></i>Display");  
+        $(this).html("<span class='glyphicon glyphicon-chevron-down' aria-hidden='true'></span>Display");  
     } else {
         $(this).parent().parent().siblings('.categoryDetail').show();
-        $(this).html("<i class='icon-chevron-up'></i>Hide");  
+        $(this).html("<span class='glyphicon glyphicon-chevron-up' aria-hidden='true'></span>Hide");  
     }    
   });
   
