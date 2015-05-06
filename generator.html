@@ -9,6 +9,8 @@
  </head>
 <body>
   <div class="container">
+    <h1>Fiasco-Mustache</h1>
+    <h2>A playset-editor for Fiasco, with <s>a</s> Mustache ...</h2>
     <ul class="nav nav-tabs">
       <li class="active"><a href="#" id="select_section_0">Introduction</a></li>
       <li><a href="#" id="select_section_1">Section #1</a></li>
@@ -242,7 +244,7 @@ function init_uicontrols()
 $(function() {
    
    $.ajax({
-      url: 'sections_dice.mst',
+      url: 'html_template.mst',
       success: function(template) { 
         $("#core").html(render_sections(template));
         init_uicontrols(); 

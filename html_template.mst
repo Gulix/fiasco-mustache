@@ -83,3 +83,28 @@
 	<div class='row'><div class='col-md-10 col-md-offset-1'><textarea id='mustache_template' style='width:100%' rows='15' placeholder='Mustache template' required></textarea></div></div>
 	<div class='row'><button type="button" id='generate_button' class="btn btn-primary col-md-offset-8 col-md-4">Generate !</button></div>
  </div>
+ 
+<!-- About -->
+<div id='section99' class='section'>
+    <div class='row'><div class='col-md-10 col-md-offset-1'>
+        <h3>What is Fiasco-Mustache ?</h3>
+        <p>"Fiasco-Mustache" is a project I made in order to easily produce playsets for <a href='http://www.bullypulpitgames.com/games/fiasco/'>Fiasco</a>, the game by Bully Pulpit Game.</p>
+        <p>This project is a web-page, with no server-related code, so everyone can get a local copy and test it with any web-browser. The name comes from a distinct library used to generate the playset : <a href='https://mustache.github.io/'>Mustache</a>.
+        <h3>How to use Fiasco-Mustache ?</h3>
+        <p>First step is to fill all the blank fields from 'Introduction' to 'Section #4'. It matches a classic Fiasco-playset layout.</p>
+        <p>In the 'Introduction' tab, you'll find a "Save JSON" button, that you can use to save your work. It produces a file that you can save anywhere, and then use via the "Load JSON" button to restore your work.</p>
+        <p>The final step is to produce your playset. You'll need a "mustache template", a text that will be used to generate your template to various form : XML file, BBcode, pure text, wiki format, ... Paste your template in the text frame of the 'Generate' tab. Then click the "Generate" button, and save your file on your computer.</p>
+        <p>You now can produce your playset in various formats ! Here is a <a href='templates/examples.html'>temporary link</a> with various templates you can use.</p>
+        <h3>Licenses</h3>
+        <p><b>Current version :</b> 0.1 &lt;2015-05-06&gt;</p>
+        <p>"Fiasco-Mustache" is released under the <a href='https://creativecommons.org/licenses/by-sa/3.0/'>CC-By-SA license</a>, and is a <a href='http://en.wikipedia.org/wiki/Beerware'>Beerware</a>.</p> 
+        <p>His author is <a href='http://www.gulix.fr'>Gulix</a> and the source code can be found on <a href='http://www.github.com/gulix/fiasco-mustache'>GitHub</a></p>
+        <p>"Fiasco-Mustache" uses the following library :</p>
+        <ul>
+            <li><a href='https://github.com/janl/mustache.js/'>Mustache.js</a> for the template generation</li>
+            <li><a href='http://getbootstrap.com'>Bootstrap</a> for the css rendering</li>
+            <li><a href='http://jquery.com/'>jQuery</a> for the AJAX functions</li>
+            <li><a href='https://github.com/eligrey/FileSaver.js/'>FileSaver.js</a> for the file saving/loading</li>
+        </ul>
+    </div></div>
+</div>
