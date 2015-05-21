@@ -1,0 +1,260 @@
+<html>
+ <head>
+   <script src="js/mustache.js"></script>
+   <script src="js/FileSaver.min.js"></script>
+  
+   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+   <link href="css/bootstrap.min.css" rel="stylesheet" media="screen" />
+   <link rel="stylesheet" href="css/style.css" />
+ </head>
+<body>
+  <div class="container">
+    <h1>Fiasco-Mustache</h1>
+    <h2>A playset-editor for Fiasco, with <s>a</s> Mustache ...</h2>
+    <ul class="nav nav-tabs">
+      <li class="active"><a href="#" id="select_section_0">Introduction</a></li>
+      <li><a href="#" id="select_section_1">Section #1</a></li>
+      <li><a href="#" id="select_section_2">Section #2</a></li>
+      <li><a href="#" id="select_section_3">Section #3</a></li>
+      <li><a href="#" id="select_section_4">Section #4</a></li>
+      <li><a href="#" id="select_section_5">Insta-setup</a></li>
+      <li><a href="#" id="select_section_90">Generate</a></li>
+      <li><a href="#" id="select_section_99">About</a></li>
+    </ul>
+   <div id='core'>
+     
+   </div>
+ 
+ </div>
+    <script src="http://code.jquery.com/jquery.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+ </body>
+ <script>
+
+
+/* Rendering functions */
+function render_sections(template)
+{
+  var view = {
+    sections: []
+  };
+  for(var iSection=1; iSection<=4; iSection++) {
+    var section = {
+      categories: [],
+      sectionIdx: iSection
+    };
+    for(var iCategory=1; iCategory<=6; iCategory++)
+    {
+      var category = {
+        details: [],
+        categoryIdx: iCategory
+      };
+      for(var iDetail=1; iDetail<=6; iDetail++)
+      {
+        category.details.push(iDetail);
+      }
+      section.categories.push(category);
+    }
+    
+    view.sections.push(section);
+  }
+  
+  // Render the four "dice" sections, all the same
+  return Mustache.render(template, view);
+}
+
+function click_section(sectionIdx)
+{
+  var lsIdx = [0, 1, 2, 3, 4, 5, 90, 99];
+  for(var idx=0; idx<=lsIdx.length; idx++)
+  {
+    var sectionName = '#section' + lsIdx[idx];
+    var sectionTab = '#select_section_' + lsIdx[idx];
+    if (lsIdx[idx] == sectionIdx)
+    {
+      // Showing the section
+      $(sectionName).show();
+      $(sectionTab).parent().addClass('active');
+    }
+    else 
+    {
+      // Hiding the section
+      $(sectionName).hide();
+      $(sectionTab).parent().removeClass('active');
+    }
+  }
+}
+
+function get_generated_json()
+{
+  var jsonData = { };
+  
+  // Generic elements
+  jsonData.title = $('#input_title').val();
+  jsonData.subtitle = $('#input_subtitle').val();
+  jsonData.teaser = $('#input_teaser').val();
+  jsonData.presentation = $('#input_presentation').val();
+  jsonData.inspirations = $('#input_inspirations').val();
+  jsonData.advices = $('#input_advices').val();
+  jsonData.credits = $('#input_credits').val();  
+  
+  // Tables of elements
+  jsonData.sections = [];
+  // Each section
+  for(var iSection = 1; iSection <= 4; iSection++) {
+      var jsonSection = { label: $('#sec'+iSection).val() };
+      // A unique property for the label
+      jsonData["section"+iSection] = jsonSection.label;
+      jsonSection.categories = [];
+      // Each category
+      for (var iCategory = 1; iCategory <= 6; iCategory++) {
+          var jsonCategory = { label: $('#sec' + iSection + '_cat' + iCategory).val() };
+          // A unique property for the label
+          jsonData["section"+iSection+"_category"+iCategory] = jsonCategory.label;
+          jsonCategory.details = [];
+          // Each detail
+          for (var iDetail = 1; iDetail <= 6; iDetail++) {
+              jsonCategory.details[iDetail - 1] = { label: $('#sec' + iSection + '_cat' + iCategory + '_detail' + iDetail).val() };              
+              // A unique property for the label
+              jsonData["section"+iSection+"_category"+iCategory+"_detail"+iDetail] = jsonCategory.details[iDetail - 1].label;
+          }
+          jsonSection.categories[iCategory - 1] = jsonCategory;
+      }
+      jsonData.sections[iSection-1] = jsonSection;
+  }
+  
+  // All elements with a single property
+  
+  
+  return jsonData;
+}
+
+function generate_mustache()
+{
+  // The mustache template
+  var mustacheTemplate = $('#mustache_template').val();
+  var jsonData = get_generated_json();
+
+  var blob = new Blob([Mustache.render(mustacheTemplate, jsonData)], {type: "text/plain;charset=utf-8"});
+  saveAs(blob, "generated_template_" + $('#input_title').val());
+}
+
+function save_json()
+{
+  var blob = new Blob([JSON.stringify(get_generated_json())], {type: "text/plain;charset=utf-8"});
+  saveAs(blob, "fiasco_template_" + $('#input_title').val() + ".json");
+}
+
+function load_files(evt) {
+    
+    var files = evt.target.files;
+
+    for (var i = 0, f; f = files[i]; i++) {
+        var reader = new FileReader();
+
+        reader.onload = function (reader) {
+            var data = JSON.parse(this.result);
+            load_from_json(data);
+        };
+
+        reader.readAsText(f);
+    }
+
+    // Reset file input
+    $("#file-load-form")[0].reset();
+}
+
+function load_from_json(jsonData)
+{
+    // Introduction elements
+    $('#input_title').val(jsonData.title);
+    $('#input_subtitle').val(jsonData.subtitle);
+    $('#input_teaser').val(jsonData.teaser);
+    $('#input_presentation').val(jsonData.presentation);
+    $('#input_inspirations').val(jsonData.inspirations);
+    $('#input_advices').val(jsonData.advices);
+    $('#input_credits').val(jsonData.credits);
+
+    // Elements from a section
+    for(var iSection = 1; iSection <= 4; iSection++) {
+      $('#sec'+iSection).val(jsonData.sections[iSection-1].label);
+      // Each category
+      for (var iCategory = 1; iCategory <= 6; iCategory++) {
+          $('#sec' + iSection + '_cat' + iCategory).val(jsonData.sections[iSection-1].categories[iCategory-1].label);
+          // Each detail
+          for (var iDetail = 1; iDetail <= 6; iDetail++) {
+              $('#sec' + iSection + '_cat' + iCategory + '_detail' + iDetail).val(
+                  jsonData.sections[iSection-1].categories[iCategory-1].details[iDetail-1].label);
+          }
+      }
+    }
+    update_section_labels();
+}
+
+function update_section_labels()
+{
+   for(var iSection=1; iSection <= 4; iSection++)
+   {
+      // The section designation goes to the tab
+      var designation = $('#sec'+iSection).val();
+      if (designation.length == 0) {
+          $('#select_section_' + iSection).html('Section #' + iSection);
+      } else {
+          $('#select_section_' + iSection).html(designation);
+      }
+   }
+}
+
+function init_uicontrols()
+{
+  // Click events on the sections
+  var lsIdx = [0, 1, 2, 3, 4, 5, 90, 99];
+  for(var idx=0; idx<=lsIdx.length; idx++) {    
+        var selector = "#select_section_" + lsIdx[idx];
+        $(selector).on('click', {id: lsIdx[idx]}, function (e) {
+            click_section(e.data.id);
+        });
+    }
+  click_section(0);
+  
+  // Click-events on the 'Display/Hide' buttons inside the Dice sections
+  $('.category_showhide').click(function() {
+    var isMasquer = $(this).children('span').hasClass('glyphicon-chevron-up');
+    if (isMasquer) {
+        $(this).parent().parent().siblings('.categoryDetail').hide();
+        $(this).html("<span class='glyphicon glyphicon-chevron-down' aria-hidden='true'></span>Display");  
+    } else {
+        $(this).parent().parent().siblings('.categoryDetail').show();
+        $(this).html("<span class='glyphicon glyphicon-chevron-up' aria-hidden='true'></span>Hide");  
+    }    
+  });
+  
+  // Click on the buttons
+  $('#generate_button').click(function() { generate_mustache(); });
+  $("#loadjson_button").click(function () { $("#file-load").click(); });
+  $("#file-load").change(load_files);  
+  $('#savejson_button').click(function() { save_json(); });
+  
+  // Focus out of the sections name input
+  for(var iSection=1; iSection <= 4; iSection++) {
+      $('#sec' + iSection).focusout(function() { update_section_labels(); });
+  }
+}
+ 
+$(function() {
+   
+   $.ajax({
+      url: 'html_template.mst',
+      success: function(template) { 
+        $("#core").html(render_sections(template));
+        init_uicontrols(); 
+      },
+      dataType: 'text'
+   });
+  
+  
+  
+});
+  </script>
+</html>
+
