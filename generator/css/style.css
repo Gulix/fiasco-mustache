@@ -13,25 +13,25 @@
 }
 
 .dice1 {
-    background-image: url("dice1.png");
+    background-image: url("../img/dice1.png");
 }
 
 .dice2 {
-    background-image: url("dice2.png");
+    background-image: url("../img/dice2.png");
 }
 
 .dice3 {
-    background-image: url("dice3.png");
+    background-image: url("../img/dice3.png");
 }
 
 .dice4 {
-    background-image: url("dice4.png");
+    background-image: url("../img/dice4.png");
 }
 
 .dice5 {
-    background-image: url("dice5.png");
+    background-image: url("../img/dice5.png");
 }
 
 .dice6 {
-    background-image: url("dice6.png");
+    background-image: url("../img/dice6.png");
 }
