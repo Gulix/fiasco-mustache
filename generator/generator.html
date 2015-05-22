@@ -189,20 +189,93 @@ function load_from_json(jsonData)
       }
     }
     update_section_labels();
+    update_details_options();
 }
 
 function update_section_labels()
 {
    for(var iSection=1; iSection <= 4; iSection++)
    {
+      // Designation from the field, or standard value
+      var designation = getSectionName(iSection);
+      
       // The section designation goes to the tab
-      var designation = $('#sec'+iSection).val();
-      if (designation.length == 0) {
-          $('#select_section_' + iSection).html('Section #' + iSection);
-      } else {
-          $('#select_section_' + iSection).html(designation);
-      }
+      $('#select_section_' + iSection).html(designation);
+      
+      // Insta-setup select need to be changed/loaded too
+      $('.section-option' + iSection).each(function() {
+        $(this).html(designation);
+      });
    }
+}
+
+function getSectionName(iSection)
+{
+    var designation = $('#sec'+iSection).val();
+    if (designation.length == 0)
+        designation = 'Section #' + iSection;
+    
+    return designation;
+}
+
+function getCategoryName(iSection, iCategory)
+{
+    var designation = $('#sec' + iSection + '_cat' + iCategory).val();
+    if (designation.length == 0)
+        designation = 'Category #' + iCategory;
+    
+    return designation;
+}
+
+function getDetailName(iSection, iCategory, iDetail)
+{
+    var designation = $('#sec' + iSection + '_cat' + iCategory + '_detail' + iDetail).val();
+    if (designation.length == 0)
+        designation = 'Detail #' + iDetail;
+    
+    return designation;
+}
+
+function fill_details_options()
+{
+    $('.element-selection').each(function() { 
+        for (var iCategory=1; iCategory <= 6; iCategory++)
+        {
+            for (var iDetail=1; iDetail <= 6; iDetail++)
+            {
+                var idCatDet = "cat" + iCategory + "_det" + iDetail;
+                $(this).append("<option value='" + idCatDet + "' class='" + idCatDet + "' />");
+            }
+        }
+    });
+}
+
+function update_details_options()
+{
+  $('.element-selection').each(function() { 
+    
+    // Section of the details
+    var iSection = 0;
+    for(var iSectionChoice=1; iSectionChoice <= 4; iSectionChoice++)
+    {
+       if ($(this).hasClass('element-selection-section-choice' + iSectionChoice))
+       {
+         iSection = $('#insta-setup-section-choice' + iSectionChoice + ' option:selected').val();
+       }
+    }
+    
+    // Filling all the Categories/Details from the section
+    var sectionDesignation = getSectionName(iSection);
+    for (var iCategory=1; iCategory <= 6; iCategory++)
+    {
+        var categoryDesignation = getCategoryName(iSection, iCategory);
+        for (var iDetail=1; iDetail <= 6; iDetail++)
+        {
+            var detailDesignation = getDetailName(iSection, iCategory, iDetail);
+            $(this).children('.cat' + iCategory + '_det' + iDetail).html(categoryDesignation + ' : ' + detailDesignation);
+        }
+    }
+  });
 }
 
 function init_uicontrols()
@@ -235,9 +308,29 @@ function init_uicontrols()
   $("#file-load").change(load_files);  
   $('#savejson_button').click(function() { save_json(); });
   
+  // Fill the Section selectors with the right options
+  $('.section-selection').each(function() { 
+    for(var idx = 1; idx <= 4; idx++)
+    {
+        var selectedValue = '';
+        if ($(this).attr('id') == ('insta-setup-section-choice' + idx))
+            selectedValue = ' selected';
+        $(this).append("<option value='" + idx + "' class='section-option" + idx + "' " + selectedValue + " />");
+    }
+  });
+  // Fill the Details selectors with the right options
+  fill_details_options();
+  update_section_labels();
+  update_details_options();
+  
   // Focus out of the sections name input
   for(var iSection=1; iSection <= 4; iSection++) {
       $('#sec' + iSection).focusout(function() { update_section_labels(); });
+      for (var iCategory=1; iCategory <= 6; iCategory++) {
+        for (var iDetail=1; iDetail <= 6; iDetail++) {
+            $('#sec' + iSection + '_cat' + iCategory + '_det' + iDetail).focusout(function() { update_details_options(); });
+        }
+      }
   }
 }
  

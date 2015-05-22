@@ -108,3 +108,52 @@
         </ul>
     </div></div>
 </div>
+
+<!-- Insta-setup section -->
+<div id='section5' class='section'>
+    <div class='row'><div class='col-md-10 col-md-offset-1'>
+        <select class='form-control section-selection' id='insta-setup-section-choice1' />
+    </div></div>
+    
+    <div class='row'><div class='col-md-8 col-md-offset-2'>
+        <h3>For three players</h3>
+        <select class='form-control element-selection-section-choice1 element-selection' id='insta-setup-section-choice1-element-choice1' />
+        <h3>For four players, add ...</h3>
+        <select class='form-control element-selection-section-choice1 element-selection' id='insta-setup-section-choice1-element-choice2' />
+        <h3>For five players, add ...</h3>
+        <select class='form-control element-selection-section-choice1 element-selection' id='insta-setup-section-choice1-element-choice3' />
+    </div></div>
+    
+    <div class='row'><div class='col-md-10 col-md-offset-1'>
+        <select class='form-control section-selection' id='insta-setup-section-choice2' />
+    </div></div>
+    
+    <div class='row'><div class='col-md-8 col-md-offset-2'>
+        <h3>For three players</h3>
+        <select class='form-control element-selection-section-choice2 element-selection' id='insta-setup-section-choice2-element-choice1' />
+        <h3>For four or five players, add ...</h3>
+        <select class='form-control element-selection-section-choice2 element-selection' id='insta-setup-section-choice2-element-choice2' />
+    </div></div>
+    
+    <div class='row'><div class='col-md-10 col-md-offset-1'>
+        <select class='form-control section-selection' id='insta-setup-section-choice3' />
+    </div></div>
+    
+    <div class='row'><div class='col-md-8 col-md-offset-2'>
+        
+        <h3>For three or four players</h3>
+        <select class='form-control element-selection-section-choice3 element-selection' id='insta-setup-section-choice3-element-choice1' />
+        <h3>For five players, add ...</h3>
+        <select class='form-control element-selection-section-choice3 element-selection' id='insta-setup-section-choice3-element-choice2' />
+    </div></div>
+    
+    <div class='row'><div class='col-md-10 col-md-offset-1'>
+        <select class='form-control section-selection' id='insta-setup-section-choice4' />
+    </div></div>
+    
+    <div class='row'><div class='col-md-8 col-md-offset-2'>
+        
+        <h3>For three, four or five players</h3>
+        <select class='form-control element-selection-section-choice4 element-selection' id='insta-setup-section-choice4-element-choice1' />
+    </div></div>            
+</div>    
