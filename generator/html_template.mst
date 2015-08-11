@@ -79,7 +79,8 @@
  
  <!-- Generation by Mustache of the playset with the help of a template -->
  <div id='section90' class='section'>
-	<div class='row'><p class='col-md-12'>Mustache template to use for the generation</p></div>
+	<div class='row'><button type="button" id='to-pdf-button' class="btn btn-primary col-md-offset-8 col-md-4">Print to PDF !</button></div>
+    <div class='row'><p class='col-md-12'>Mustache template to use for the generation</p></div>
 	<div class='row'><div class='col-md-10 col-md-offset-1'><textarea id='mustache_template' style='width:100%' rows='15' placeholder='Mustache template' required></textarea></div></div>
 	<div class='row'><button type="button" id='generate_button' class="btn btn-primary col-md-offset-8 col-md-4">Generate !</button></div>
  </div>

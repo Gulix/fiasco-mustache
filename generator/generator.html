@@ -28,6 +28,8 @@
  </div>
     <script src="http://code.jquery.com/jquery.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <script src="js/pdfmake.min.js"></script>
+    <script src="js/vfs_fonts.js"></script>
  </body>
  <script>
 
@@ -138,6 +140,65 @@ function generate_mustache()
   var blob = new Blob([Mustache.render(mustacheTemplate, jsonData)], {type: "text/plain;charset=utf-8"});
   saveAs(blob, "generated_template_" + $('#input_title').val());
 }
+
+/**********************/
+/*** PDF generation ***/
+/**********************/
+function generate_pdf()
+{
+  var jsonPlayset = get_generated_json();
+  
+  var docDefinition = { 
+    content: [ ],
+    styles: {
+      sectionHeader: {
+        fontSize: 22,
+        bold: true,
+        marginBottom: 8
+      },
+      sectionFooter: {
+        fontSize: 20,
+        bold: true,
+        alignment: 'right',
+        marginTop: 5
+      },
+      category: {
+        fontSize: 14,
+        bold: true,
+        marginLeft: 10,
+        marginTop: 3,
+        marginBottom: 2
+      },
+      details: {
+        fontSize: 12,
+        marginLeft: 22,
+        marginTop: 1
+      }
+    }
+  };
+  
+  // Generation of the Sections
+  for(var iSection = 0; iSection < jsonPlayset.sections.length; iSection++)
+  {
+    var currentSection = jsonPlayset.sections[iSection];
+    docDefinition.content.push({ text: currentSection.label + " ...", style: 'sectionHeader' });
+    for (var iCategory = 0; iCategory < currentSection.categories.length; iCategory++)
+    {
+      var currentCategory = currentSection.categories[iCategory];
+      docDefinition.content.push({ text: (iCategory + 1) + " - " + currentCategory.label, style: 'category' });
+      for (var iDetail = 0; iDetail < currentCategory.details.length; iDetail++)
+      {
+        var currentDetail = currentCategory.details[iDetail];
+        docDefinition.content.push({ text: (iDetail + 1) + " - " + currentDetail.label, style: 'details' });
+      }
+    }
+    docDefinition.content.push({ text: "... " + jsonPlayset.teaser, style: 'sectionFooter', pageBreak: 'after' });
+  }
+  
+  pdfMake.createPdf(docDefinition).download();
+}
+
+/**********************/
 
 function save_json()
 {
@@ -304,6 +365,7 @@ function init_uicontrols()
   
   // Click on the buttons
   $('#generate_button').click(function() { generate_mustache(); });
+  $('#to-pdf-button').click(function() { generate_pdf(); });
   $("#loadjson_button").click(function () { $("#file-load").click(); });
   $("#file-load").change(load_files);  
   $('#savejson_button').click(function() { save_json(); });
