@@ -128,7 +128,35 @@ function get_generated_json()
   // All elements with a single property
   
   
+  jsonData.instasetup = get_instasetup_json();
+  
   return jsonData;
+}
+
+/**
+ * Get the Insta-Setup informations
+ * @return {json} the data in json format
+ */
+function get_instasetup_json()
+{
+  var jsonIS = [];
+  for (var iSection = 1; iSection <= 4; iSection++)
+  {
+    if ( $("#insta-setup-section-choice" + iSection).length) {
+      var jsonSectionIS = { };
+      jsonSectionIS.id = $("#insta-setup-section-choice" + iSection).val();
+      jsonSectionIS.values = [];
+      for (var iElement = 1; iElement <= 4; iElement++)
+      {
+        if ($("#insta-setup-section-choice" + iSection + "-element-choice" + iElement).length) {
+          jsonSectionIS.values.push($("#insta-setup-section-choice" + iSection + "-element-choice" + iElement).val());
+        }
+      }
+      
+      jsonIS.push(jsonSectionIS);
+    }
+  }
+  return jsonIS;
 }
 
 function generate_mustache()
@@ -251,6 +279,29 @@ function load_from_json(jsonData)
     }
     update_section_labels();
     update_details_options();
+    
+    load_instasetup_fromjson(jsonData.instasetup);
+}
+
+function load_instasetup_fromjson(jsonIS)
+{
+  if (jsonIS instanceof Array)
+  {
+    for (var iSection = 0; iSection < jsonIS.length; iSection++)
+    {
+      var selectSection = "#insta-setup-section-choice" + (iSection + 1);
+      if ( $(selectSection).length) {
+        $(selectSection).val(jsonIS[iSection].id);
+        for (var iElement = 0; iElement < jsonIS[iSection].values.length; iElement++)
+        {
+          var selectElement = "#insta-setup-section-choice" + (iSection + 1) + "-element-choice" + (iElement + 1);
+          if ($(selectElement).length) {
+            $(selectElement).val(jsonIS[iSection].values[iElement]);
+          }
+        }
+      }
+    }
+  }
 }
 
 function update_section_labels()
@@ -322,6 +373,8 @@ function update_details_options()
        if ($(this).hasClass('element-selection-section-choice' + iSectionChoice))
        {
          iSection = $('#insta-setup-section-choice' + iSectionChoice + ' option:selected').val();
+         iSection = iSection.substring(3);
+         iSection = parseInt(iSection);
        }
     }
     
@@ -377,7 +430,7 @@ function init_uicontrols()
         var selectedValue = '';
         if ($(this).attr('id') == ('insta-setup-section-choice' + idx))
             selectedValue = ' selected';
-        $(this).append("<option value='" + idx + "' class='section-option" + idx + "' " + selectedValue + " />");
+        $(this).append("<option value='cat" + idx + "' class='section-option" + idx + "' " + selectedValue + " />");
     }
   });
   // Fill the Details selectors with the right options
