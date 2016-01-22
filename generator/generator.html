@@ -2,7 +2,7 @@
  <head>
    <script src="js/mustache.js"></script>
    <script src="js/FileSaver.min.js"></script>
-  
+
    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen" />
    <link rel="stylesheet" href="css/style.css" />
@@ -22,142 +22,20 @@
       <li><a href="#" id="select_section_99">About</a></li>
     </ul>
    <div id='core'>
-     
+
    </div>
- 
+
  </div>
     <script src="http://code.jquery.com/jquery.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/pdfmake.min.js"></script>
     <script src="js/vfs_fonts.js"></script>
+    <script src="scripts/rendering.js"></script>
+    <script src="scripts/json.js"></script>
+    <script src="scripts/pdf.js"></script>
+    <script src="scripts/loadsave.js"></script>
  </body>
  <script>
-
-
-/* Rendering functions */
-function render_sections(template)
-{
-  var view = {
-    sections: []
-  };
-  for(var iSection=1; iSection<=4; iSection++) {
-    var section = {
-      categories: [],
-      sectionIdx: iSection
-    };
-    for(var iCategory=1; iCategory<=6; iCategory++)
-    {
-      var category = {
-        details: [],
-        categoryIdx: iCategory
-      };
-      for(var iDetail=1; iDetail<=6; iDetail++)
-      {
-        category.details.push(iDetail);
-      }
-      section.categories.push(category);
-    }
-    
-    view.sections.push(section);
-  }
-  
-  // Render the four "dice" sections, all the same
-  return Mustache.render(template, view);
-}
-
-function click_section(sectionIdx)
-{
-  var lsIdx = [0, 1, 2, 3, 4, 5, 90, 99];
-  for(var idx=0; idx<=lsIdx.length; idx++)
-  {
-    var sectionName = '#section' + lsIdx[idx];
-    var sectionTab = '#select_section_' + lsIdx[idx];
-    if (lsIdx[idx] == sectionIdx)
-    {
-      // Showing the section
-      $(sectionName).show();
-      $(sectionTab).parent().addClass('active');
-    }
-    else 
-    {
-      // Hiding the section
-      $(sectionName).hide();
-      $(sectionTab).parent().removeClass('active');
-    }
-  }
-}
-
-function get_generated_json()
-{
-  var jsonData = { };
-  
-  // Generic elements
-  jsonData.title = $('#input_title').val();
-  jsonData.subtitle = $('#input_subtitle').val();
-  jsonData.teaser = $('#input_teaser').val();
-  jsonData.presentation = $('#input_presentation').val();
-  jsonData.inspirations = $('#input_inspirations').val();
-  jsonData.advices = $('#input_advices').val();
-  jsonData.credits = $('#input_credits').val();  
-  
-  // Tables of elements
-  jsonData.sections = [];
-  // Each section
-  for(var iSection = 1; iSection <= 4; iSection++) {
-      var jsonSection = { label: $('#sec'+iSection).val() };
-      // A unique property for the label
-      jsonData["section"+iSection] = jsonSection.label;
-      jsonSection.categories = [];
-      // Each category
-      for (var iCategory = 1; iCategory <= 6; iCategory++) {
-          var jsonCategory = { label: $('#sec' + iSection + '_cat' + iCategory).val() };
-          // A unique property for the label
-          jsonData["section"+iSection+"_category"+iCategory] = jsonCategory.label;
-          jsonCategory.details = [];
-          // Each detail
-          for (var iDetail = 1; iDetail <= 6; iDetail++) {
-              jsonCategory.details[iDetail - 1] = { label: $('#sec' + iSection + '_cat' + iCategory + '_detail' + iDetail).val() };              
-              // A unique property for the label
-              jsonData["section"+iSection+"_category"+iCategory+"_detail"+iDetail] = jsonCategory.details[iDetail - 1].label;
-          }
-          jsonSection.categories[iCategory - 1] = jsonCategory;
-      }
-      jsonData.sections[iSection-1] = jsonSection;
-  }
-  
-  // All elements with a single property
-  
-  
-  jsonData.instasetup = get_instasetup_json();
-  
-  return jsonData;
-}
-
-/**
- * Get the Insta-Setup informations
- * @return {json} the data in json format
- */
-function get_instasetup_json()
-{
-  var jsonIS = [];
-  for (var iSection = 1; iSection <= 4; iSection++)
-  {
-    if ( $("#insta-setup-section-choice" + iSection).length) {
-      var jsonSectionIS = { };
-      jsonSectionIS.id = $("#insta-setup-section-choice" + iSection).val();
-      jsonSectionIS.values = [];
-      for (var iElement = 1; iElement <= 4; iElement++)
-      {
-        if ($("#insta-setup-section-choice" + iSection + "-element-choice" + iElement).length) {
-          jsonSectionIS.values.push($("#insta-setup-section-choice" + iSection + "-element-choice" + iElement).val());
-        }
-      }
-      
-      jsonIS.push(jsonSectionIS);
-    }
-  }
-  return jsonIS;
-}
 
 function generate_mustache()
 {
@@ -169,262 +47,39 @@ function generate_mustache()
   saveAs(blob, "generated_template_" + $('#input_title').val());
 }
 
-/**********************/
-/*** PDF generation ***/
-/**********************/
-function generate_pdf()
-{
-  var jsonPlayset = get_generated_json();
-  
-  var docDefinition = { 
-    content: [ ],
-    styles: {
-      sectionHeader: {
-        fontSize: 22,
-        bold: true,
-        marginBottom: 8
-      },
-      sectionFooter: {
-        fontSize: 20,
-        bold: true,
-        alignment: 'right',
-        marginTop: 5
-      },
-      category: {
-        fontSize: 14,
-        bold: true,
-        marginLeft: 10,
-        marginTop: 3,
-        marginBottom: 2
-      },
-      details: {
-        fontSize: 12,
-        marginLeft: 22,
-        marginTop: 1
-      }
-    }
-  };
-  
-  // Generation of the Sections
-  for(var iSection = 0; iSection < jsonPlayset.sections.length; iSection++)
-  {
-    var currentSection = jsonPlayset.sections[iSection];
-    docDefinition.content.push({ text: currentSection.label + " ...", style: 'sectionHeader' });
-    for (var iCategory = 0; iCategory < currentSection.categories.length; iCategory++)
-    {
-      var currentCategory = currentSection.categories[iCategory];
-      docDefinition.content.push({ text: (iCategory + 1) + " - " + currentCategory.label, style: 'category' });
-      for (var iDetail = 0; iDetail < currentCategory.details.length; iDetail++)
-      {
-        var currentDetail = currentCategory.details[iDetail];
-        docDefinition.content.push({ text: (iDetail + 1) + " - " + currentDetail.label, style: 'details' });
-      }
-    }
-    docDefinition.content.push({ text: "... " + jsonPlayset.teaser, style: 'sectionFooter', pageBreak: 'after' });
-  }
-  
-  pdfMake.createPdf(docDefinition).download();
-}
-
-/**********************/
-
-function save_json()
-{
-  var blob = new Blob([JSON.stringify(get_generated_json())], {type: "text/plain;charset=utf-8"});
-  saveAs(blob, "fiasco_template_" + $('#input_title').val() + ".json");
-}
-
-function load_files(evt) {
-    
-    var files = evt.target.files;
-
-    for (var i = 0, f; f = files[i]; i++) {
-        var reader = new FileReader();
-
-        reader.onload = function (reader) {
-            var data = JSON.parse(this.result);
-            load_from_json(data);
-        };
-
-        reader.readAsText(f);
-    }
-
-    // Reset file input
-    $("#file-load-form")[0].reset();
-}
-
-function load_from_json(jsonData)
-{
-    // Introduction elements
-    $('#input_title').val(jsonData.title);
-    $('#input_subtitle').val(jsonData.subtitle);
-    $('#input_teaser').val(jsonData.teaser);
-    $('#input_presentation').val(jsonData.presentation);
-    $('#input_inspirations').val(jsonData.inspirations);
-    $('#input_advices').val(jsonData.advices);
-    $('#input_credits').val(jsonData.credits);
-
-    // Elements from a section
-    for(var iSection = 1; iSection <= 4; iSection++) {
-      $('#sec'+iSection).val(jsonData.sections[iSection-1].label);
-      // Each category
-      for (var iCategory = 1; iCategory <= 6; iCategory++) {
-          $('#sec' + iSection + '_cat' + iCategory).val(jsonData.sections[iSection-1].categories[iCategory-1].label);
-          // Each detail
-          for (var iDetail = 1; iDetail <= 6; iDetail++) {
-              $('#sec' + iSection + '_cat' + iCategory + '_detail' + iDetail).val(
-                  jsonData.sections[iSection-1].categories[iCategory-1].details[iDetail-1].label);
-          }
-      }
-    }
-    update_section_labels();
-    update_details_options();
-    
-    load_instasetup_fromjson(jsonData.instasetup);
-}
-
-function load_instasetup_fromjson(jsonIS)
-{
-  if (jsonIS instanceof Array)
-  {
-    for (var iSection = 0; iSection < jsonIS.length; iSection++)
-    {
-      var selectSection = "#insta-setup-section-choice" + (iSection + 1);
-      if ( $(selectSection).length) {
-        $(selectSection).val(jsonIS[iSection].id);
-        for (var iElement = 0; iElement < jsonIS[iSection].values.length; iElement++)
-        {
-          var selectElement = "#insta-setup-section-choice" + (iSection + 1) + "-element-choice" + (iElement + 1);
-          if ($(selectElement).length) {
-            $(selectElement).val(jsonIS[iSection].values[iElement]);
-          }
-        }
-      }
-    }
-  }
-}
-
-function update_section_labels()
-{
-   for(var iSection=1; iSection <= 4; iSection++)
-   {
-      // Designation from the field, or standard value
-      var designation = getSectionName(iSection);
-      
-      // The section designation goes to the tab
-      $('#select_section_' + iSection).html(designation);
-      
-      // Insta-setup select need to be changed/loaded too
-      $('.section-option' + iSection).each(function() {
-        $(this).html(designation);
-      });
-   }
-}
-
-function getSectionName(iSection)
-{
-    var designation = $('#sec'+iSection).val();
-    if (designation.length == 0)
-        designation = 'Section #' + iSection;
-    
-    return designation;
-}
-
-function getCategoryName(iSection, iCategory)
-{
-    var designation = $('#sec' + iSection + '_cat' + iCategory).val();
-    if (designation.length == 0)
-        designation = 'Category #' + iCategory;
-    
-    return designation;
-}
-
-function getDetailName(iSection, iCategory, iDetail)
-{
-    var designation = $('#sec' + iSection + '_cat' + iCategory + '_detail' + iDetail).val();
-    if (designation.length == 0)
-        designation = 'Detail #' + iDetail;
-    
-    return designation;
-}
-
-function fill_details_options()
-{
-    $('.element-selection').each(function() { 
-        for (var iCategory=1; iCategory <= 6; iCategory++)
-        {
-            for (var iDetail=1; iDetail <= 6; iDetail++)
-            {
-                var idCatDet = "cat" + iCategory + "_det" + iDetail;
-                $(this).append("<option value='" + idCatDet + "' class='" + idCatDet + "' />");
-            }
-        }
-    });
-}
-
-function update_details_options()
-{
-  $('.element-selection').each(function() { 
-    
-    // Section of the details
-    var iSection = 0;
-    for(var iSectionChoice=1; iSectionChoice <= 4; iSectionChoice++)
-    {
-       if ($(this).hasClass('element-selection-section-choice' + iSectionChoice))
-       {
-         iSection = $('#insta-setup-section-choice' + iSectionChoice + ' option:selected').val();
-         iSection = iSection.substring(3);
-         iSection = parseInt(iSection);
-       }
-    }
-    
-    // Filling all the Categories/Details from the section
-    var sectionDesignation = getSectionName(iSection);
-    for (var iCategory=1; iCategory <= 6; iCategory++)
-    {
-        var categoryDesignation = getCategoryName(iSection, iCategory);
-        for (var iDetail=1; iDetail <= 6; iDetail++)
-        {
-            var detailDesignation = getDetailName(iSection, iCategory, iDetail);
-            $(this).children('.cat' + iCategory + '_det' + iDetail).html(categoryDesignation + ' : ' + detailDesignation);
-        }
-    }
-  });
-}
-
 function init_uicontrols()
 {
   // Click events on the sections
   var lsIdx = [0, 1, 2, 3, 4, 5, 90, 99];
-  for(var idx=0; idx<=lsIdx.length; idx++) {    
+  for(var idx=0; idx<=lsIdx.length; idx++) {
         var selector = "#select_section_" + lsIdx[idx];
         $(selector).on('click', {id: lsIdx[idx]}, function (e) {
-            click_section(e.data.id);
+            showhide_section(e.data.id);
         });
     }
-  click_section(0);
-  
+  showhide_section(0);
+
   // Click-events on the 'Display/Hide' buttons inside the Dice sections
   $('.category_showhide').click(function() {
     var isMasquer = $(this).children('span').hasClass('glyphicon-chevron-up');
     if (isMasquer) {
         $(this).parent().parent().siblings('.categoryDetail').hide();
-        $(this).html("<span class='glyphicon glyphicon-chevron-down' aria-hidden='true'></span>Display");  
+        $(this).html("<span class='glyphicon glyphicon-chevron-down' aria-hidden='true'></span>Display");
     } else {
         $(this).parent().parent().siblings('.categoryDetail').show();
-        $(this).html("<span class='glyphicon glyphicon-chevron-up' aria-hidden='true'></span>Hide");  
-    }    
+        $(this).html("<span class='glyphicon glyphicon-chevron-up' aria-hidden='true'></span>Hide");
+    }
   });
-  
+
   // Click on the buttons
   $('#generate_button').click(function() { generate_mustache(); });
   $('#to-pdf-button').click(function() { generate_pdf(); });
   $("#loadjson_button").click(function () { $("#file-load").click(); });
-  $("#file-load").change(load_files);  
+  $("#file-load").change(load_files);
   $('#savejson_button').click(function() { save_json(); });
-  
+
   // Fill the Section selectors with the right options
-  $('.section-selection').each(function() { 
+  $('.section-selection').each(function() {
     for(var idx = 1; idx <= 4; idx++)
     {
         var selectedValue = '';
@@ -437,7 +92,7 @@ function init_uicontrols()
   fill_details_options();
   update_section_labels();
   update_details_options();
-  
+
   // Focus out of the sections name input
   for(var iSection=1; iSection <= 4; iSection++) {
       $('#sec' + iSection).focusout(function() { update_section_labels(); });
@@ -448,21 +103,20 @@ function init_uicontrols()
       }
   }
 }
- 
+
 $(function() {
-   
+
    $.ajax({
       url: 'html_template.mst',
-      success: function(template) { 
+      success: function(template) {
         $("#core").html(render_sections(template));
-        init_uicontrols(); 
+        init_uicontrols();
       },
       dataType: 'text'
    });
-  
-  
-  
+
+
+
 });
   </script>
 </html>
-
