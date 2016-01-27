@@ -9,8 +9,21 @@
  </head>
 <body>
   <div class="container">
-    <h1>Fiasco-Mustache</h1>
-    <h2>A playset-editor for Fiasco, with <s>a</s> Mustache ...</h2>
+    <div class='row'>
+      <div class='col-md-8'>
+        <h1>Fiasco-Mustache</h1>
+        <h2>A playset-editor for Fiasco, with <s>a</s> Mustache ...</h2>
+      </div>
+
+      <div class='col-md-offset-1 col-md-2 loadsave-buttons'>
+        <form style="display:none" id="file-load-form">
+  			  <input type="file" id="file-load" name="files[]" multiple class="form-control" style="display:none" />
+  		  </form>
+
+  		  <button type="button" id='loadjson_button' class="btn btn-default">Load JSON</button>
+  		  <button type="button" id='savejson_button' class="btn btn-default">Save JSON</button>
+      </div>
+    </div>
     <ul class="nav nav-tabs">
       <li class="active"><a href="#" id="select_section_0">Introduction</a></li>
       <li><a href="#" id="select_section_1">Section #1</a></li>
