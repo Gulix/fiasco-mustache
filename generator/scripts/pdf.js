@@ -24,7 +24,8 @@ function generate_pdf()
         bold: true,
         marginLeft: 10,
         marginTop: 3,
-        marginBottom: 2
+        marginBottom: 2,
+        background: '#AAAAAA'
       },
       details: {
         fontSize: 12,
@@ -39,10 +40,12 @@ function generate_pdf()
   {
     var currentSection = jsonPlayset.sections[iSection];
     docDefinition.content.push({ text: currentSection.label + " ...", style: 'sectionHeader' });
+    // Chaque catégorie de la page
     for (var iCategory = 0; iCategory < currentSection.categories.length; iCategory++)
     {
       var currentCategory = currentSection.categories[iCategory];
-      docDefinition.content.push({ text: (iCategory + 1) + " - " + currentCategory.label, style: 'category' });
+      docDefinition.content.push({ text: (iCategory + 1) + " - " + currentCategory.label, style: 'category' } );
+      // Chaque élément de la catégorie
       for (var iDetail = 0; iDetail < currentCategory.details.length; iDetail++)
       {
         var currentDetail = currentCategory.details[iDetail];
