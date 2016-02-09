@@ -47,6 +47,7 @@
     <script src="scripts/json.js"></script>
     <script src="scripts/pdf.js"></script>
     <script src="scripts/loadsave.js"></script>
+    <script src="scripts/instasetup.js"></script>
  </body>
  <script>
 
@@ -91,30 +92,18 @@ function init_uicontrols()
   $("#file-load").change(load_files);
   $('#savejson_button').click(function() { save_json(); });
 
-  // Fill the Section selectors with the right options
-  $('.section-selection').each(function() {
-    for(var idx = 1; idx <= 4; idx++)
-    {
-        var selectedValue = '';
-        if ($(this).attr('id') == ('insta-setup-section-choice' + idx))
-            selectedValue = ' selected';
-        $(this).append("<option value='cat" + idx + "' class='section-option" + idx + "' " + selectedValue + " />");
-    }
-  });
-  // Fill the Details selectors with the right options
-  fill_details_options();
-  update_section_labels();
-  update_details_options();
+  instasetup_init();
 
   // Focus out of the sections name input
   for(var iSection=1; iSection <= 4; iSection++) {
       $('#sec' + iSection).focusout(function() { update_section_labels(); });
       for (var iCategory=1; iCategory <= 6; iCategory++) {
         for (var iDetail=1; iDetail <= 6; iDetail++) {
-            $('#sec' + iSection + '_cat' + iCategory + '_det' + iDetail).focusout(function() { update_details_options(); });
+            $('#sec' + iSection + '_cat' + iCategory + '_det' + iDetail).focusout(function() { instasetup_update_options_text(); });
         }
       }
   }
+
 }
 
 $(function() {

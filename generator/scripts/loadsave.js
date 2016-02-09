@@ -48,9 +48,9 @@ function load_from_json(jsonData)
       }
     }
     update_section_labels();
-    update_details_options();
 
     load_instasetup_fromjson(jsonData.instasetup);
+    instasetup_update_options_text();
 }
 
 function load_instasetup_fromjson(jsonIS)

@@ -45,3 +45,9 @@
 .loadsave-buttons .btn {
   margin-top: 10px;
 }
+
+/* Buttons for the insta-setup */
+.instasetup-buttons {
+  margin-top: 3px;
+  margin-bottom: 4px;
+}
