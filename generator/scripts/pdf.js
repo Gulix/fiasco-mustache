@@ -10,19 +10,27 @@ function generate_pdf()
     styles: get_pdf_style()
   };
 
-  // Generation of the Sections
+  pdf_add_introduction(docDefinition.content, jsonPlayset);
+
+  // Generation of the Sections (Relationships, Needs, Locations, Objects)
   for(var iSection = 0; iSection < jsonPlayset.sections.length; iSection++)
   {
     var currentSection = jsonPlayset.sections[iSection];
     pdf_add_section(docDefinition.content, currentSection, jsonPlayset.teaser);
   }
 
-  pdfMake.createPdf(docDefinition).download();
+  var customFilename = "Fiasco Playset - " + $('#input_title').val() + ".pdf";
+  pdfMake.createPdf(docDefinition).download(customFilename);
 }
 
 function pdf_add_introduction(content, jsonPlayset)
 {
-
+  // Title
+  content.push({ text: jsonPlayset.title, style: 'title', pageOrientation: 'portrait'});
+  content.push({ text: 'Credits', style: 'subTitle'});
+  content.push({ text: jsonPlayset.credits, style: 'description'});
+  content.push({ text: 'Boilerplate', style: 'subTitle'});
+  content.push({ text: jsonPlayset.credits, style: 'description'});
 }
 
 /**
@@ -89,6 +97,23 @@ function get_pdf_style()
       fontSize: 12,
       marginLeft: 22,
       marginTop: 1
+    },
+    title: {
+      fontSize: 32,
+      bold: true,
+      marginBottom: 8,
+      color: '#AA2222',
+      alignment: 'center'
+    },
+		subTitle: {
+			fontSize: 26,
+			bold: true,
+			marginLeft: 10,
+      marginTop: 16
+		},
+    description: {
+      fontSize: 16,
+			marginBottom: 6
     }
   };
   return styles;
