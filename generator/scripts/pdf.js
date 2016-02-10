@@ -3,14 +3,14 @@
  */
 function generate_pdf()
 {
-  var jsonPlayset = get_generated_json();
+  var jsonPlayset = get_json_fromUI(false, true);
 
   var docDefinition = {
     content: [ ],
     styles: get_pdf_style()
   };
 
-  pdf_add_introduction(docDefinition.content, jsonPlayset);
+  pdf_add_description(docDefinition.content, jsonPlayset);
 
   // Generation of the Sections (Relationships, Needs, Locations, Objects)
   for(var iSection = 0; iSection < jsonPlayset.sections.length; iSection++)
@@ -23,14 +23,37 @@ function generate_pdf()
   pdfMake.createPdf(docDefinition).download(customFilename);
 }
 
-function pdf_add_introduction(content, jsonPlayset)
+/**
+ * [pdf_add_introduction description]
+ * @param {[type]} content     [description]
+ * @param {[type]} jsonPlayset [description]
+ */
+function pdf_add_description(content, jsonPlayset)
 {
-  // Title
+  // Title page with credits
   content.push({ text: jsonPlayset.title, style: 'title', pageOrientation: 'portrait'});
   content.push({ text: 'Credits', style: 'subTitle'});
   content.push({ text: jsonPlayset.credits, style: 'description'});
   content.push({ text: 'Boilerplate', style: 'subTitle'});
-  content.push({ text: jsonPlayset.credits, style: 'description'});
+  content.push({ text: jsonPlayset.credits, style: 'description', pageBreak: 'after'});
+
+  // Description page
+  content.push({ text: jsonPlayset.subtitle, style: 'title', pageOrientation: 'portrait'});
+  for(var iBlock = 0; iBlock < jsonPlayset.description_paragraphs.length; iBlock++)
+  {
+    var blockStyle = 'description';
+    switch(jsonPlayset.description_paragraphs[iBlock].type)
+    {
+      case 'title':
+        blockStyle = 'subTitle';
+        break;
+      case 'paragraph':
+        blockStyle = 'description';
+        break;
+    }
+
+    content.push({ text: jsonPlayset.description_paragraphs[iBlock].content, style: blockStyle });
+  }
 }
 
 /**
@@ -113,7 +136,8 @@ function get_pdf_style()
 		},
     description: {
       fontSize: 16,
-			marginBottom: 6
+			marginBottom: 6,
+      alignment: 'justify'
     }
   };
   return styles;

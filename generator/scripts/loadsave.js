@@ -1,37 +1,47 @@
+/**
+ * Save the Json data in a text file
+ */
 function save_json()
 {
-  var blob = new Blob([JSON.stringify(get_generated_json())], {type: "text/plain;charset=utf-8"});
+  var blob = new Blob([JSON.stringify(get_json_fromUI(false, false))], {type: "text/plain;charset=utf-8"});
   saveAs(blob, "fiasco_template_" + $('#input_title').val() + ".json");
 }
 
-function load_files(evt) {
+/**
+ * Load a JSON file inside the editor
+ * @param  {[type]} evt - Event for the files that are loaded
+ */
+function load_json_file(evt) {
 
-    var files = evt.target.files;
+    if (evt.target.files.length == 1)
+    {
+      var file = evt.target.files[0];
+      var reader = new FileReader();
 
-    for (var i = 0, f; f = files[i]; i++) {
-        var reader = new FileReader();
+      reader.onload = function (reader) {
+        var data = JSON.parse(this.result);
+        load_json_intoUI(data);
+      };
 
-        reader.onload = function (reader) {
-            var data = JSON.parse(this.result);
-            load_from_json(data);
-        };
+      reader.readAsText(file);
 
-        reader.readAsText(f);
+      // Reset file input
+      $("#file-load-form")[0].reset();
     }
-
-    // Reset file input
-    $("#file-load-form")[0].reset();
 }
 
-function load_from_json(jsonData)
+/**
+ * Load a JSON object into the UI
+ * @param  {json} jsonData - Data to be loaded
+ */
+function load_json_intoUI(jsonData)
 {
     // Introduction elements
     $('#input_title').val(jsonData.title);
     $('#input_subtitle').val(jsonData.subtitle);
     $('#input_teaser').val(jsonData.teaser);
-    $('#input_presentation').val(jsonData.presentation);
-    $('#input_inspirations').val(jsonData.inspirations);
-    $('#input_advices').val(jsonData.advices);
+    $('#input_description').val(jsonData.description);
+    load_old_description_version(jsonData);
     $('#input_credits').val(jsonData.credits);
 
     // Elements from a section
@@ -53,6 +63,10 @@ function load_from_json(jsonData)
     instasetup_update_options_text();
 }
 
+/**
+ * Load the Insta-Setup part of a JSON object into the UI
+ * @param  {[type]} jsonIS [description]
+ */
 function load_instasetup_fromjson(jsonIS)
 {
   if (jsonIS instanceof Array)
@@ -71,5 +85,42 @@ function load_instasetup_fromjson(jsonIS)
         }
       }
     }
+  }
+}
+
+/**
+ * Load old & obsolete JSON values into UI (migrated to the new format)
+ * @param  {[type]} jsonData [description]
+ */
+function load_old_description_version(jsonData)
+{
+  var migratedDescription = '';
+  var blockSep = '';
+
+  if (jsonData.hasOwnProperty("description") && (jsonData.description.length > 0))
+  {
+    migratedDescription += blockSep + jsonData.description;
+    blockSep = '\n';
+  }
+
+  if (jsonData.hasOwnProperty("presentation") && (jsonData['presentation'].length > 0))
+  {
+    migratedDescription += blockSep + "# Presentation\n" + jsonData['presentation'];
+    blockSep = '\n';
+  }
+  if (jsonData.hasOwnProperty("inspirations") && (jsonData['inspirations'].length > 0))
+  {
+    migratedDescription += blockSep + "# Inspirations\n" + jsonData['inspirations'];
+    blockSep = '\n';
+  }
+  if (jsonData.hasOwnProperty("advices") && (jsonData['advices'].length > 0))
+  {
+    migratedDescription += blockSep + "# Advices\n" + jsonData['advices'];
+    blockSep = '\n';
+  }
+
+  if (migratedDescription.length > 0)
+  {
+    $('#input_description').val(migratedDescription);
   }
 }

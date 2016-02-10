@@ -17,7 +17,7 @@
 
       <div class='col-md-offset-1 col-md-2 loadsave-buttons'>
         <form style="display:none" id="file-load-form">
-  			  <input type="file" id="file-load" name="files[]" multiple class="form-control" style="display:none" />
+  			  <input type="file" id="file-load" name="file" class="form-control" style="display:none" />
   		  </form>
 
   		  <button type="button" id='loadjson_button' class="btn btn-default">Load JSON</button>
@@ -55,7 +55,7 @@ function generate_mustache()
 {
   // The mustache template
   var mustacheTemplate = $('#mustache_template').val();
-  var jsonData = get_generated_json();
+  var jsonData = get_json_fromUI(true, true);
 
   var blob = new Blob([Mustache.render(mustacheTemplate, jsonData)], {type: "text/plain;charset=utf-8"});
   saveAs(blob, "generated_template_" + $('#input_title').val());
@@ -89,7 +89,7 @@ function init_uicontrols()
   $('#generate_button').click(function() { generate_mustache(); });
   $('#to-pdf-button').click(function() { generate_pdf(); });
   $("#loadjson_button").click(function () { $("#file-load").click(); });
-  $("#file-load").change(load_files);
+  $("#file-load").change(load_json_file);
   $('#savejson_button').click(function() { save_json(); });
 
   instasetup_init();

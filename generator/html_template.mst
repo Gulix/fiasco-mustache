@@ -19,20 +19,8 @@
 	 </div>
 	 <div class='row'>
 		 <div class="form-group col-md-10 col-md-offset-1">
-			<label for="input_title">Presentation</label>
-			<textarea class="form-control" id="input_presentation" rows='3' placeholder='Playset presentation'></textarea>
-		 </div>
-	 </div>
-	 <div class='row'>
-		 <div class="form-group col-md-10 col-md-offset-1">
-			<label for="input_title">Inspirations</label>
-			<textarea class="form-control" id="input_inspirations" rows='3' placeholder='Playset inspirations'></textarea>
-		 </div>
-	 </div>
-	 <div class='row'>
-		 <div class="form-group col-md-10 col-md-offset-1">
-			<label for="input_title">Advices</label>
-			<textarea class="form-control" id="input_advices" rows='3' placeholder='Playset advices'></textarea>
+			<label for="input_title">Description</label>
+			<textarea class="form-control" id="input_description" rows='20' placeholder='Playset description'></textarea>
 		 </div>
 	 </div>
 	 <div class='row'>
