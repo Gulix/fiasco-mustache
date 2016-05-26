@@ -2,54 +2,51 @@
 **  JSON related functions **
 ****************************/
 
-/**
- * Get the JSON data from what has been set in the UI
- * @param  {boolean} withDescriptionParts      - Is the description splitted in parts ?
- * @param  {boolean} withDescriptionParagraphs - Is the description splitted in paragraphs ?
- * @return {json} Playset in JSON format
- */
-function get_json_fromUI(withDescriptionParts, withDescriptionParagraphs)
+/* Get the JSON data from the ViewModel */
+function get_json_fromPlaysetVM(playsetVM, withDescriptionParts, withDescriptionParagraphs)
 {
   var jsonData = { };
 
   // Generic elements
-  jsonData.title = $('#input_title').val();
-  jsonData.subtitle = $('#input_subtitle').val();
-  jsonData.teaser = $('#input_teaser').val();
+  jsonData.title = playsetVM.playsetTitle();
+  jsonData.subtitle = playsetVM.playsetSubtitle();
+  jsonData.teaser = playsetVM.playsetTeaser();
 
   // Description is one field
-  json_set_description(jsonData, withDescriptionParts, withDescriptionParagraphs);
+  json_set_description(jsonData, playsetVM.playsetDescription(), withDescriptionParts, withDescriptionParagraphs);
 
-  jsonData.credits = $('#input_credits').val();
+  jsonData.credits = playsetVM.playsetCredits();
 
   // Tables of elements
   jsonData.sections = [];
   // Each section
-  for(var iSection = 1; iSection <= 4; iSection++) {
-      var jsonSection = { label: $('#sec'+iSection).val() };
+  for(var iSection = 0; iSection < playsetVM.sections().length; iSection++) {
+      var currentSection = playsetVM.sections()[iSection];
+      var jsonSection = { label: currentSection.title() };
       // A unique property for the label
-      jsonData["section"+iSection] = jsonSection.label;
+      jsonData["section"+(iSection + 1)] = jsonSection.label;
       jsonSection.categories = [];
       // Each category
-      for (var iCategory = 1; iCategory <= 6; iCategory++) {
-          var jsonCategory = { label: $('#sec' + iSection + '_cat' + iCategory).val() };
+      for (var iCategory = 0; iCategory < currentSection.categories().length; iCategory++) {
+          var currentCategory = currentSection.categories()[iCategory];
+          var jsonCategory = { label: currentCategory.title() };
           // A unique property for the label
-          jsonData["section"+iSection+"_category"+iCategory] = jsonCategory.label;
+          jsonData["section"+(iSection+1)+"_category"+(iCategory+1)] = jsonCategory.label;
           jsonCategory.details = [];
           // Each detail
-          for (var iDetail = 1; iDetail <= 6; iDetail++) {
-              jsonCategory.details[iDetail - 1] = { label: $('#sec' + iSection + '_cat' + iCategory + '_detail' + iDetail).val() };
+          for (var iDetail = 0; iDetail < currentCategory.items().length; iDetail++) {
+              var currentDetail = currentCategory.items()[iDetail];
+              var jsonDetail = { label: currentDetail.textValue() };
+              jsonCategory.details.push(jsonDetail);
               // A unique property for the label
-              jsonData["section"+iSection+"_category"+iCategory+"_detail"+iDetail] = jsonCategory.details[iDetail - 1].label;
+              jsonData["section"+(iSection+1)+"_category"+(iCategory+1)+"_detail"+(iDetail+1)] = currentDetail.textValue();
           }
-          jsonSection.categories[iCategory - 1] = jsonCategory;
+          jsonSection.categories.push(jsonCategory);
       }
-      jsonData.sections[iSection-1] = jsonSection;
+      jsonData.sections.push(jsonSection);
   }
 
   // All elements with a single property
-
-
   jsonData.instasetup = get_instasetup_json();
 
   return jsonData;
@@ -62,7 +59,7 @@ function get_json_fromUI(withDescriptionParts, withDescriptionParagraphs)
 function get_instasetup_json()
 {
   var jsonIS = [];
-  for (var iSection = 1; iSection <= 4; iSection++)
+  /*for (var iSection = 1; iSection <= 4; iSection++)
   {
     if ( $("#insta-setup-section-choice" + iSection).length) {
       var jsonSectionIS = { };
@@ -77,7 +74,7 @@ function get_instasetup_json()
 
       jsonIS.push(jsonSectionIS);
     }
-  }
+  }*/
   return jsonIS;
 }
 
@@ -87,9 +84,9 @@ function get_instasetup_json()
  * @param {boolean} withParts - Is the description splitted in parts ? (Presentation, Movie Night, Advices, ...)
  * @param {boolean} withParagraphs - Is the text splitted in paragraphs ? (Each line is a json data object)
  */
-function json_set_description(jsonData, withParts, withParagraphs)
+function json_set_description(jsonData, description, withParts, withParagraphs)
 {
-  jsonData.description = $('#input_description').val();
+  jsonData.description = description;
 
   if (withParts)
   {
@@ -157,21 +154,22 @@ function json_add_description_part(jsonDescriptionParts, part, content)
   }
 }
 
-function json_set_description_paragraphs(jsonData)
+function get_description_paragraphs(playsetVM)
 {
-  jsonData["description_paragraphs"] = [ ];
-  var arrayOfLines = jsonData.description.match(/[^\r\n]+/g);
+  var description_paragraphs = [ ];
+  var arrayOfLines = playsetVM.playsetDescription().match(/[^\r\n]+/g);
   for (var iLine = 0; iLine < arrayOfLines.length; iLine++)
   {
     var sLine = arrayOfLines[iLine];
     // Is this line a Title (starts with #)
     if (sLine.substring(0, 1) === '#')
     {
-      jsonData.description_paragraphs.push({ "content": sLine.substring(1).trim(), "type": "title" });
+      description_paragraphs.push({ "content": sLine.substring(1).trim(), "type": "title" });
     }
     else // Or is this a new line of content ?
     {
-      jsonData.description_paragraphs.push({ "content": sLine, "type": "paragraph" });
+      description_paragraphs.push({ "content": sLine, "type": "paragraph" });
     }
   }
+  return description_paragraphs;
 }
