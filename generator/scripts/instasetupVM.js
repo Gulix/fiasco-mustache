@@ -23,4 +23,36 @@ function instasetupVM(playset) {
   /* Fourth section of the Insta-Setup */
   self.fourthSection = ko.observable(playset.sections()[3]);
   self.fourthSectionChoice1 = ko.observable(self.fourthSection().details()[0]);
+
+  /* Randomizing (the sections aren't randomized )*/
+  self.randomize = function() {
+    // Choices of the first section
+    var index = Math.floor((Math.random() * self.firstSection().details().length));
+    self.firstSectionChoice1(self.firstSection().details()[index]);
+    index = Math.floor((Math.random() * self.firstSection().details().length));
+    self.firstSectionChoice2(self.firstSection().details()[index]);
+    index = Math.floor((Math.random() * self.firstSection().details().length));
+    self.firstSectionChoice3(self.firstSection().details()[index]);
+    index = Math.floor((Math.random() * self.firstSection().details().length));
+    self.firstSectionChoice4(self.firstSection().details()[index]);
+    index = Math.floor((Math.random() * self.firstSection().details().length));
+    self.firstSectionChoice5(self.firstSection().details()[index]);
+
+    // Choices of the second section
+    index = Math.floor((Math.random() * self.secondSection().details().length));
+    self.secondSectionChoice1(self.secondSection().details()[index]);
+    index = Math.floor((Math.random() * self.secondSection().details().length));
+    self.secondSectionChoice2(self.secondSection().details()[index]);
+
+    // Choices of the third section
+    index = Math.floor((Math.random() * self.thirdSection().details().length));
+    self.thirdSectionChoice1(self.thirdSection().details()[index]);
+    index = Math.floor((Math.random() * self.thirdSection().details().length));
+    self.thirdSectionChoice2(self.thirdSection().details()[index]);
+
+    // Choice of the fourth section
+    index = Math.floor((Math.random() * self.fourthSection().details().length));
+    self.fourthSectionChoice1(self.fourthSection().details()[index]);
+
+  }
 }
