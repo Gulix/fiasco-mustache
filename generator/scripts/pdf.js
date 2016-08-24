@@ -123,20 +123,20 @@ function get_pdf_style()
     },
     title: {
       fontSize: 32,
-      bold: true,
+      font: "BowlbyOneSC",
       marginBottom: 8,
       color: '#AA2222',
       alignment: 'center'
     },
 		subTitle: {
 			fontSize: 26,
-			bold: true,
+			font: "BowlbyOneSC",
 			marginLeft: 10,
-      marginTop: 16
+      marginTop: 4
 		},
     description: {
       fontSize: 16,
-			marginBottom: 6,
+			marginBottom: 18,
       alignment: 'justify'
     }
   };
