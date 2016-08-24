@@ -1,260 +1,297 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
  <head>
+   <meta charset="utf-8">
+   <title>Fiasco Mustache - A Fiasco Playset Editor</title>
    <script src="js/mustache.js"></script>
    <script src="js/FileSaver.min.js"></script>
-  
+
    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen" />
    <link rel="stylesheet" href="css/style.css" />
  </head>
 <body>
   <div class="container">
-    <h1>Fiasco-Mustache</h1>
-    <h2>A playset-editor for Fiasco, with <s>a</s> Mustache ...</h2>
-    <ul class="nav nav-tabs">
-      <li class="active"><a href="#" id="select_section_0">Introduction</a></li>
-      <li><a href="#" id="select_section_1">Section #1</a></li>
-      <li><a href="#" id="select_section_2">Section #2</a></li>
-      <li><a href="#" id="select_section_3">Section #3</a></li>
-      <li><a href="#" id="select_section_4">Section #4</a></li>
-      <li><a href="#" id="select_section_5">Insta-setup</a></li>
-      <li><a href="#" id="select_section_90">Generate</a></li>
-      <li><a href="#" id="select_section_99">About</a></li>
+    <div class='row'>
+      <div class='col-md-8'>
+        <h1>Fiasco-Mustache</h1>
+        <h2>A playset-editor for Fiasco, with <s>a</s> Mustache ...</h2>
+      </div>
+
+      <div class='col-md-offset-1 col-md-2 loadsave-buttons'>
+        <form style="display:none" id="file-load-form">
+  			  <input type="file" id="file-load" name="file" class="form-control" style="display:none"
+                />
+  		  </form>
+
+  		  <button type="button" data-bind="click: loadPlayset" class="btn btn-default">Load Playset</button>
+  		  <button type="button" data-bind="click: savePlayset" class="btn btn-default">Save Playset</button>
+      </div>
+    </div>
+    <ul class="nav nav-tabs" data-bind="foreach: displayedSections">
+      <li data-bind="css: isVisible() ? 'active' : ''"><a href="#" data-bind="attr: { 'id': 'select_section_' + code() }, text: displayedTitle, click: show"></a></li>
     </ul>
    <div id='core'>
-     
+
+     <!-- Introduction (aka Section #0) -->
+     <div id='section0' class='section' data-bind="visible: isIntroductionVisible">
+      <div class='row'>
+        <div class="form-group col-md-10 col-md-offset-1">
+         <label for="input_title">Title</label>
+         <input type="text" class="form-control" id="input_title" placeholder="Playset title"
+                data-bind="value: playsetTitle" />
+        </div>
+      </div>
+      <div class='row'>
+        <div class="form-group col-md-10 col-md-offset-1">
+         <label for="input_title">Sub-title</label>
+         <input type="text" class="form-control" id="input_subtitle" placeholder="Playset subtitle"
+                data-bind="value: playsetSubtitle" />
+        </div>
+      </div>
+      <div class='row'>
+        <div class="form-group col-md-10 col-md-offset-1">
+         <label for="input_title">Teaser</label>
+         <input type="text" class="form-control" id="input_teaser" placeholder="Playset teaser"
+                data-bind="value: playsetTeaser" />
+        </div>
+      </div>
+      <div class='row'>
+        <div class="form-group col-md-10 col-md-offset-1">
+         <label for="input_title">Description</label>
+         <textarea class="form-control" id="input_description" rows='20' placeholder='Playset description'
+                   data-bind="value: playsetDescription"></textarea>
+        </div>
+      </div>
+      <div class='row'>
+        <div class="form-group col-md-10 col-md-offset-1">
+         <label for="input_title">Credits</label>
+         <textarea class="form-control" id="input_credits" rows='3' placeholder='Playset credits'
+                   data-bind="value: playsetCredits"></textarea>
+        </div>
+      </div>
+     </div>
+
+     <!-- Sections of D6 Tables -->
+     <!-- ko foreach: sections -->
+     <div class='section' data-bind="attr: {'id': 'section' + number()}, visible: isVisible()">
+       <div class='sectionTitle row'>
+         <div class='col-md-12 form-group'>
+     	     <label data-bind="attr: {'for': 'sec' + number()}">Section designation</label>
+     	     <input data-bind="attr: {'id': 'sec' + number()}, value: titleValue" type='text' class='form-control' />
+     	   </div>
+       </div>
+       <!-- ko foreach: categories -->
+       <div class='category'>
+     	   <div class='categoryTitle row'>
+     	     <div class='dice-category col-md-offset-2 col-md-6'
+                data-bind="css: 'dice' + number()">
+              <input type='text' class='form-control'
+                    data-bind="value: title"></input>
+           </div>
+     	     <div class='col-md-2'>
+             <a class='btn btn-default category_showhide' href='#'
+                data-bind="visible: showingItems, click: hideItems">
+     		        <span class='glyphicon glyphicon-chevron-up' aria-hidden='true'></span>Hide
+             </a>
+             <a class='btn btn-default category_showhide' href='#'
+                data-bind="visible: !showingItems(), click: showItems">
+     		        <span class='glyphicon glyphicon-chevron-down' aria-hidden='true'></span>Show
+             </a>
+            </div>
+     	   </div>
+         <!-- ko foreach: items -->
+     	   <div class='categoryDetail row' data-bind="visible: $parent.showingItems">
+     	     <div class='col-md-5 col-md-offset-3 dice-detail dice{{.}}'
+                data-bind="css: 'dice' + number()">
+     		      <input type='text' class='form-control'
+                     data-bind="value: textValue" />
+     	      </div>
+     	   </div>
+         <!-- /ko -->
+       </div>
+       <!-- /ko -->
+     </div>
+     <!-- /ko -->
+
+
+     <!-- Insta-Setup -->
+     <div id='section5' class='section' data-bind='visible: isInstaSetupVisible'>
+         <!-- ko with: instasetup -->
+         <div class='row'>
+            <div class='col-md-2 col-md-offset-1'>
+               <button type="button" id='randomize-insta-setup' class="btn btn-primary instasetup-buttons"
+                       data-bind="{click: randomize}">Randomize !</button>
+            </div>
+         </div>
+
+         <!-- First Section of choices (usually Relationships)-->
+         <div class='row'><div class='col-md-10 col-md-offset-1'>
+             <select class='form-control section-selection'
+                     data-bind="options: $parent.sections(), optionsText: 'titleValue', value: firstSection"></select>
+         </div></div>
+
+         <div class='row'><div class='col-md-8 col-md-offset-2'>
+             <h3>For three players</h3>
+             <select class='form-control instasetup-element-selection'
+                     data-bind="options: firstSection().details(), optionsText: 'titleWithCategory', value: firstSectionChoice1"></select>
+             <select class='form-control instasetup-element-selection'
+                     data-bind="options: firstSection().details(), optionsText: 'titleWithCategory', value: firstSectionChoice2"></select>
+             <select class='form-control instasetup-element-selection'
+                     data-bind="options: firstSection().details(), optionsText: 'titleWithCategory', value: firstSectionChoice3"></select>
+             <h3>For four players, add ...</h3>
+             <select class='form-control instasetup-element-selection'
+                     data-bind="options: firstSection().details(), optionsText: 'titleWithCategory', value: firstSectionChoice4"></select>
+             <h3>For five players, add ...</h3>
+             <select class='form-control instasetup-element-selection' id='insta-setup-section-choice1-element-choice5'
+                     data-bind="options: firstSection().details(), optionsText: 'titleWithCategory', value: firstSectionChoice5"></select>
+         </div></div>
+
+         <!-- Second section of choices (usually Needs)-->
+         <div class='row'><div class='col-md-10 col-md-offset-1'>
+             <select class='form-control section-selection'
+                     data-bind="options: $parent.sections(), optionsText: 'titleValue', value: secondSection"></select>
+         </div></div>
+
+         <div class='row'><div class='col-md-8 col-md-offset-2'>
+             <h3>For three players</h3>
+             <select class='form-control instasetup-element-selection'
+                     data-bind="options: secondSection().details(), optionsText: 'titleWithCategory', value: secondSectionChoice1"></select>
+             <h3>For four or five players, add ...</h3>
+             <select class='form-control instasetup-element-selection'
+                     data-bind="options: secondSection().details(), optionsText: 'titleWithCategory', value: secondSectionChoice2"></select>
+         </div></div>
+
+         <!-- Third section of choices (usually Objects) -->
+         <div class='row'><div class='col-md-10 col-md-offset-1'>
+             <select class='form-control section-selection'
+                     data-bind="options: $parent.sections(), optionsText: 'titleValue', value: thirdSection"></select>
+         </div></div>
+
+         <div class='row'><div class='col-md-8 col-md-offset-2'>
+
+             <h3>For three or four players</h3>
+             <select class='form-control instasetup-element-selection'
+                     data-bind="options: thirdSection().details(), optionsText: 'titleWithCategory', value: thirdSectionChoice1"></select>
+             <h3>For five players, add ...</h3>
+             <select class='form-control instasetup-element-selection'
+                     data-bind="options: thirdSection().details(), optionsText: 'titleWithCategory', value: thirdSectionChoice2"></select>
+         </div></div>
+
+         <!-- Fourth section of choices (usually Locations) -->
+         <div class='row'><div class='col-md-10 col-md-offset-1'>
+             <select class='form-control section-selection'
+                     data-bind="options: $parent.sections(), optionsText: 'titleValue', value: fourthSection"></select>
+         </div></div>
+
+         <div class='row'><div class='col-md-8 col-md-offset-2'>
+
+             <h3>For three, four or five players</h3>
+             <select class='form-control instasetup-element-selection'
+                     data-bind="options: fourthSection().details(), optionsText: 'titleWithCategory', value: fourthSectionChoice1"></select>
+         </div></div>
+
+         <!-- /ko -->
+     </div>
+
+     <!-- Generation by Mustache of the playset with the help of a template -->
+     <div data-bind='visible: isGeneratorVisible' class='section'>
+    	<div class='row'><button type="button" id='to-pdf-button' class="btn btn-primary">Print to PDF !</button></div>
+        <div class='row'><p class='col-md-12'>Mustache template to use for the generation</p></div>
+    	<div class='row'><div class='col-md-10 col-md-offset-1'><textarea id='mustache_template' style='width:100%' rows='15' placeholder='Mustache template' required></textarea></div></div>
+    	<div class='row'><button type="button" id='generate_button' class="btn btn-primary col-md-offset-8 col-md-4">Generate !</button></div>
+     </div>
+
+    <!-- About -->
+    <div data-bind='visible: isAboutVisible' class='section'>
+        <div class='row'><div class='col-md-10 col-md-offset-1'>
+            <h3>What is Fiasco-Mustache ?</h3>
+            <p>"Fiasco-Mustache" is a project I made in order to easily produce playsets for <a href='http://www.bullypulpitgames.com/games/fiasco/'>Fiasco</a>, the game by Bully Pulpit Game.</p>
+            <p>This project is a web-page, with no server-related code, so everyone can get a local copy and test it with any web-browser. The name comes from a distinct library used to generate the playset : <a href='https://mustache.github.io/'>Mustache</a>.
+            <h3>How to use Fiasco-Mustache ?</h3>
+            <p>First step is to fill all the blank fields from 'Introduction' to 'Section #4'. It matches a classic Fiasco-playset layout.</p>
+            <p>In the 'Introduction' tab, you'll find a "Save JSON" button, that you can use to save your work. It produces a file that you can save anywhere, and then use via the "Load JSON" button to restore your work.</p>
+            <p>The final step is to produce your playset. You'll need a "mustache template", a text that will be used to generate your template to various form : XML file, BBcode, pure text, wiki format, ... Paste your template in the text frame of the 'Generate' tab. Then click the "Generate" button, and save your file on your computer.</p>
+            <p>You now can produce your playset in various formats ! Here is a <a href='templates/examples.html'>temporary link</a> with various templates you can use.</p>
+            <h3>Licenses</h3>
+            <p><b>Current version :</b> 0.1 &lt;2015-05-06&gt;</p>
+            <p>"Fiasco-Mustache" is released under the <a href='https://creativecommons.org/licenses/by-sa/3.0/'>CC-By-SA license</a>, and is a <a href='http://en.wikipedia.org/wiki/Beerware'>Beerware</a>.</p>
+            <p>His author is <a href='http://www.gulix.fr'>Gulix</a> and the source code can be found on <a href='http://www.github.com/gulix/fiasco-mustache'>GitHub</a></p>
+            <p>"Fiasco-Mustache" uses the following library :</p>
+            <ul>
+                <li><a href='https://github.com/janl/mustache.js/'>Mustache.js</a> for the template generation</li>
+                <li><a href='http://getbootstrap.com'>Bootstrap</a> for the css rendering</li>
+                <li><a href='http://jquery.com/'>jQuery</a> for the AJAX functions</li>
+                <li><a href='https://github.com/eligrey/FileSaver.js/'>FileSaver.js</a> for the file saving/loading</li>
+            </ul>
+        </div></div>
+    </div>
+
    </div>
- 
+
  </div>
     <script src="http://code.jquery.com/jquery.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <script src="js/pdfmake.min.js"></script>
+    <script src="js/vfs_fonts.js"></script>
+    <script src="js/knockout-3.4.0.js"></script>
+    <script src="scripts/json.js"></script>
+    <script src="scripts/pdf.js"></script>
+    <!-- ViewModels for Knockout -->
+    <script src="scripts/itemVM.js"></script>
+    <script src="scripts/categoryVM.js"></script>
+    <script src="scripts/displayedSectionVM.js"></script>
+    <script src="scripts/sectionVM.js"></script>
+    <script src="scripts/instasetupVM.js"></script>
+    <script src="scripts/playsetVM.js"></script>
  </body>
  <script>
-
-
-/* Rendering functions */
-function render_sections(template)
-{
-  var view = {
-    sections: []
-  };
-  for(var iSection=1; iSection<=4; iSection++) {
-    var section = {
-      categories: [],
-      sectionIdx: iSection
-    };
-    for(var iCategory=1; iCategory<=6; iCategory++)
-    {
-      var category = {
-        details: [],
-        categoryIdx: iCategory
-      };
-      for(var iDetail=1; iDetail<=6; iDetail++)
-      {
-        category.details.push(iDetail);
-      }
-      section.categories.push(category);
-    }
-    
-    view.sections.push(section);
-  }
-  
-  // Render the four "dice" sections, all the same
-  return Mustache.render(template, view);
-}
-
-function click_section(sectionIdx)
-{
-  var lsIdx = [0, 1, 2, 3, 4, 5, 90, 99];
-  for(var idx=0; idx<=lsIdx.length; idx++)
-  {
-    var sectionName = '#section' + lsIdx[idx];
-    var sectionTab = '#select_section_' + lsIdx[idx];
-    if (lsIdx[idx] == sectionIdx)
-    {
-      // Showing the section
-      $(sectionName).show();
-      $(sectionTab).parent().addClass('active');
-    }
-    else 
-    {
-      // Hiding the section
-      $(sectionName).hide();
-      $(sectionTab).parent().removeClass('active');
-    }
-  }
-}
-
-function get_generated_json()
-{
-  var jsonData = { };
-  
-  // Generic elements
-  jsonData.title = $('#input_title').val();
-  jsonData.subtitle = $('#input_subtitle').val();
-  jsonData.teaser = $('#input_teaser').val();
-  jsonData.presentation = $('#input_presentation').val();
-  jsonData.inspirations = $('#input_inspirations').val();
-  jsonData.advices = $('#input_advices').val();
-  jsonData.credits = $('#input_credits').val();  
-  
-  // Tables of elements
-  jsonData.sections = [];
-  // Each section
-  for(var iSection = 1; iSection <= 4; iSection++) {
-      var jsonSection = { label: $('#sec'+iSection).val() };
-      // A unique property for the label
-      jsonData["section"+iSection] = jsonSection.label;
-      jsonSection.categories = [];
-      // Each category
-      for (var iCategory = 1; iCategory <= 6; iCategory++) {
-          var jsonCategory = { label: $('#sec' + iSection + '_cat' + iCategory).val() };
-          // A unique property for the label
-          jsonData["section"+iSection+"_category"+iCategory] = jsonCategory.label;
-          jsonCategory.details = [];
-          // Each detail
-          for (var iDetail = 1; iDetail <= 6; iDetail++) {
-              jsonCategory.details[iDetail - 1] = { label: $('#sec' + iSection + '_cat' + iCategory + '_detail' + iDetail).val() };              
-              // A unique property for the label
-              jsonData["section"+iSection+"_category"+iCategory+"_detail"+iDetail] = jsonCategory.details[iDetail - 1].label;
-          }
-          jsonSection.categories[iCategory - 1] = jsonCategory;
-      }
-      jsonData.sections[iSection-1] = jsonSection;
-  }
-  
-  // All elements with a single property
-  
-  
-  return jsonData;
-}
 
 function generate_mustache()
 {
   // The mustache template
   var mustacheTemplate = $('#mustache_template').val();
-  var jsonData = get_generated_json();
+  var jsonData = get_json_fromUI(true, true);
 
   var blob = new Blob([Mustache.render(mustacheTemplate, jsonData)], {type: "text/plain;charset=utf-8"});
   saveAs(blob, "generated_template_" + $('#input_title').val());
 }
 
-function save_json()
-{
-  var blob = new Blob([JSON.stringify(get_generated_json())], {type: "text/plain;charset=utf-8"});
-  saveAs(blob, "fiasco_template_" + $('#input_title').val() + ".json");
-}
-
-function load_files(evt) {
-    
-    var files = evt.target.files;
-
-    for (var i = 0, f; f = files[i]; i++) {
-        var reader = new FileReader();
-
-        reader.onload = function (reader) {
-            var data = JSON.parse(this.result);
-            load_from_json(data);
-        };
-
-        reader.readAsText(f);
-    }
-
-    // Reset file input
-    $("#file-load-form")[0].reset();
-}
-
-function load_from_json(jsonData)
-{
-    // Introduction elements
-    $('#input_title').val(jsonData.title);
-    $('#input_subtitle').val(jsonData.subtitle);
-    $('#input_teaser').val(jsonData.teaser);
-    $('#input_presentation').val(jsonData.presentation);
-    $('#input_inspirations').val(jsonData.inspirations);
-    $('#input_advices').val(jsonData.advices);
-    $('#input_credits').val(jsonData.credits);
-
-    // Elements from a section
-    for(var iSection = 1; iSection <= 4; iSection++) {
-      $('#sec'+iSection).val(jsonData.sections[iSection-1].label);
-      // Each category
-      for (var iCategory = 1; iCategory <= 6; iCategory++) {
-          $('#sec' + iSection + '_cat' + iCategory).val(jsonData.sections[iSection-1].categories[iCategory-1].label);
-          // Each detail
-          for (var iDetail = 1; iDetail <= 6; iDetail++) {
-              $('#sec' + iSection + '_cat' + iCategory + '_detail' + iDetail).val(
-                  jsonData.sections[iSection-1].categories[iCategory-1].details[iDetail-1].label);
-          }
-      }
-    }
-    update_section_labels();
-}
-
-function update_section_labels()
-{
-   for(var iSection=1; iSection <= 4; iSection++)
-   {
-      // The section designation goes to the tab
-      var designation = $('#sec'+iSection).val();
-      if (designation.length == 0) {
-          $('#select_section_' + iSection).html('Section #' + iSection);
-      } else {
-          $('#select_section_' + iSection).html(designation);
-      }
-   }
-}
-
 function init_uicontrols()
 {
-  // Click events on the sections
-  var lsIdx = [0, 1, 2, 3, 4, 5, 90, 99];
-  for(var idx=0; idx<=lsIdx.length; idx++) {    
-        var selector = "#select_section_" + lsIdx[idx];
-        $(selector).on('click', {id: lsIdx[idx]}, function (e) {
-            click_section(e.data.id);
-        });
-    }
-  click_section(0);
-  
-  // Click-events on the 'Display/Hide' buttons inside the Dice sections
-  $('.category_showhide').click(function() {
-    var isMasquer = $(this).children('span').hasClass('glyphicon-chevron-up');
-    if (isMasquer) {
-        $(this).parent().parent().siblings('.categoryDetail').hide();
-        $(this).html("<span class='glyphicon glyphicon-chevron-down' aria-hidden='true'></span>Display");  
-    } else {
-        $(this).parent().parent().siblings('.categoryDetail').show();
-        $(this).html("<span class='glyphicon glyphicon-chevron-up' aria-hidden='true'></span>Hide");  
-    }    
-  });
-  
   // Click on the buttons
   $('#generate_button').click(function() { generate_mustache(); });
-  $("#loadjson_button").click(function () { $("#file-load").click(); });
-  $("#file-load").change(load_files);  
+  $('#to-pdf-button').click(function() { generate_pdf(); });
+
   $('#savejson_button').click(function() { save_json(); });
-  
-  // Focus out of the sections name input
-  for(var iSection=1; iSection <= 4; iSection++) {
-      $('#sec' + iSection).focusout(function() { update_section_labels(); });
-  }
+
 }
- 
+
 $(function() {
-   
-   $.ajax({
-      url: 'html_template.mst',
-      success: function(template) { 
-        $("#core").html(render_sections(template));
-        init_uicontrols(); 
-      },
-      dataType: 'text'
+
+   var viewModel = new playsetVM();
+   ko.applyBindings(viewModel);
+
+   $("#file-load").change(function (evt) {
+
+       if (evt.target.files.length == 1)
+       {
+         var file = evt.target.files[0];
+         var reader = new FileReader();
+
+         reader.onload = function (reader) {
+           var data = JSON.parse(this.result);
+           viewModel.updateFromJson(data);
+         };
+
+         reader.readAsText(file);
+
+         // Reset file input
+         $("#file-load-form")[0].reset();
+       }
    });
-  
-  
-  
+
+   $('#to-pdf-button').click(function() { generate_pdf(viewModel); });
 });
   </script>
 </html>
-
