@@ -1,5 +1,7 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
  <head>
+   <meta charset="utf-8">
    <title>Fiasco Mustache - A Fiasco Playset Editor</title>
    <script src="js/mustache.js"></script>
    <script src="js/FileSaver.min.js"></script>
@@ -27,7 +29,7 @@
       </div>
     </div>
     <ul class="nav nav-tabs" data-bind="foreach: displayedSections">
-      <li data-bind="css: isVisible() ? 'active' : ''"><a href="#" data-bind="attr: { 'id': 'select_section_' + code() }, text: title, click: show"></a></li>
+      <li data-bind="css: isVisible() ? 'active' : ''"><a href="#" data-bind="attr: { 'id': 'select_section_' + code() }, text: displayedTitle, click: show"></a></li>
     </ul>
    <div id='core'>
 

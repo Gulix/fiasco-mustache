@@ -6,6 +6,14 @@ function displayedSectionVM(title, code, isVisible) {
   self.code = ko.observable(code);
   self.isVisible = ko.observable(isVisible)
 
+  self.displayedTitle = ko.pureComputed(function() {
+    if (self.title().length == 0)
+    {
+      return "Section #" + self.code();
+    }
+    return self.title();
+  });
+
   self.show = function() {
     if (self.hideOthers != undefined) {
       self.hideOthers();
