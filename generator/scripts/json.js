@@ -154,22 +154,26 @@ function json_add_description_part(jsonDescriptionParts, part, content)
   }
 }
 
-function get_description_paragraphs(playsetVM)
+/*
+  Returns text divided into 'blocks', being either 'title' (starts with #) or 'paragraph' (everything else)
+  Used for generating the PDF
+ */
+function divideText_intoBlocks_titleParagraph(text)
 {
-  var description_paragraphs = [ ];
-  var arrayOfLines = playsetVM.playsetDescription().match(/[^\r\n]+/g);
+  var blocks = [ ];
+  var arrayOfLines = text.match(/[^\r\n]+/g);
   for (var iLine = 0; iLine < arrayOfLines.length; iLine++)
   {
     var sLine = arrayOfLines[iLine];
     // Is this line a Title (starts with #)
     if (sLine.substring(0, 1) === '#')
     {
-      description_paragraphs.push({ "content": sLine.substring(1).trim(), "type": "title" });
+      blocks.push({ "content": sLine.substring(1).trim(), "type": "title" });
     }
     else // Or is this a new line of content ?
     {
-      description_paragraphs.push({ "content": sLine, "type": "paragraph" });
+      blocks.push({ "content": sLine, "type": "paragraph" });
     }
   }
-  return description_paragraphs;
+  return blocks;
 }

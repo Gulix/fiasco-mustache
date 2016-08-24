@@ -7,7 +7,7 @@ function playsetVM() {
   self.playsetSubtitle = new ko.observable('Playset Sub-Title');
   self.playsetTeaser = new ko.observable('Playset Teaser');
   self.playsetDescription = new ko.observable('');
-  self.playsetCredits = new ko.observable('Made via Fiasco-Mustache');
+  self.playsetCredits = new ko.observable('#Credits\nMade via Fiasco-Mustache\n#Boilerplate\nFiasco is Bully Pulpit Games production.');
 
   /* Sections of Categories / Items */
   self.sections = new ko.observableArray([]);
@@ -67,6 +67,7 @@ function playsetVM() {
     var blob = new Blob([JSON.stringify(get_json_fromPlaysetVM(self, false, false))], {type: "text/plain;charset=utf-8"});
     saveAs(blob, "fiasco_template_" + self.playsetTitle() + ".json");
   }
+
   /* Process the loaded file into the ViewModel */
   self.updateFromJson = function(jsonData) {
     if (jsonData != undefined) {
@@ -80,6 +81,7 @@ function playsetVM() {
         self.playsetDescription(get_oldDescription_toNewFormat(jsonData));
       }
       self.playsetCredits(jsonData.credits);
+
 
       // Sections / Categories / Details
       for(var iSection = 0; iSection < jsonData.sections.length; iSection++){
@@ -98,7 +100,7 @@ function playsetVM() {
         }
       }
     }
-  };
+  };  
 
 }
 

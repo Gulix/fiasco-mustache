@@ -14,7 +14,7 @@ function generate_pdf(playsetVM)
   for(var iSection = 0; iSection < playsetVM.sections().length; iSection++)
   {
     var currentSection = playsetVM.sections()[iSection];
-    pdf_add_section(docDefinition.content, currentSection, playsetVM.playsetTeaser());
+    pdf_add_section(docDefinition.content, currentSection, playsetVM.playsetTeaser(), playsetVM.playsetTitle());
   }
 
   var customFilename = "Fiasco Playset - " + playsetVM.playsetTitle() + ".pdf";
@@ -30,14 +30,19 @@ function pdf_add_description(content, playsetVM)
 {
   // Title page with credits
   content.push({ text: playsetVM.playsetTitle(), style: 'title', pageOrientation: 'portrait'});
-  content.push({ text: 'Credits', style: 'subTitle'});
-  content.push({ text: playsetVM.playsetCredits(), style: 'description'});
-  content.push({ text: 'Boilerplate', style: 'subTitle'});
-  content.push({ text: playsetVM.playsetCredits(), style: 'description', pageBreak: 'after'});
+  var creditsBlocks = divideText_intoBlocks_titleParagraph(playsetVM.playsetCredits());
+  for(var iBlock = 0; iBlock < creditsBlocks.length; iBlock++)
+  {
+    var block = { "style": "description", "text": creditsBlocks[iBlock].content };
+    if (creditsBlocks[iBlock].type == 'title') {
+      block.style = 'subTitle';
+    }
+    content.push(block);
+  }
 
   // Description page
-  content.push({ text: playsetVM.playsetSubtitle(), style: 'title', pageOrientation: 'portrait'});
-  var descriptionBlocks = get_description_paragraphs(playsetVM);
+  content.push({ text: playsetVM.playsetSubtitle(), style: 'title', pageOrientation: 'portrait', pageBreak: 'before' });
+  var descriptionBlocks = divideText_intoBlocks_titleParagraph(playsetVM.playsetDescription());
   for(var iBlock = 0; iBlock < descriptionBlocks.length; iBlock++)
   {
     var blockStyle = 'description';
@@ -61,9 +66,10 @@ function pdf_add_description(content, playsetVM)
  * @param {json} jsonSection   Json data for the Section description
  * @param {string} playsetTeaser Teaser (bottom description) for the playset
  */
-function pdf_add_section(content, sectionVM, playsetTeaser)
+function pdf_add_section(content, sectionVM, playsetTeaser, playsetTitle)
 {
-  content.push({ text: sectionVM.title() + " ...", style: 'sectionHeader', pageBreak: 'before', pageOrientation: 'landscape' });
+  content.push({ text: playsetTitle, style: 'titleOnHeader', pageBreak: 'before', pageOrientation: 'landscape' });
+  content.push({ text: sectionVM.title() + " ...", style: 'sectionHeader' });
 
   var columns = [ ];
   var iColumn = 0;
@@ -96,10 +102,18 @@ function pdf_add_section(content, sectionVM, playsetTeaser)
 function get_pdf_style()
 {
   var styles = {
+    titleOnHeader: {
+      fontSize: 10,
+      font: "BowlbyOneSC",
+      marginTop: 0,
+      color: '#D08484',
+      alignment: 'right'
+    },
     sectionHeader: {
       fontSize: 26,
       font: "BowlbyOneSC",
       marginBottom: 8,
+      marginTop: -10,
       color: '#8B1F1C'
     },
     sectionFooter: {
