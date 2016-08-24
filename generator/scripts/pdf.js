@@ -97,23 +97,24 @@ function get_pdf_style()
 {
   var styles = {
     sectionHeader: {
-      fontSize: 22,
-      bold: true,
-      marginBottom: 8
+      fontSize: 26,
+      font: "BowlbyOneSC",
+      marginBottom: 8,
+      color: '#8B1F1C'
     },
     sectionFooter: {
-      fontSize: 20,
-      bold: true,
+      fontSize: 22,
+      font: "BowlbyOneSC",
+      color: '#8B1F1C',
       alignment: 'right',
       marginTop: 5
     },
     category: {
-      fontSize: 14,
-      bold: true,
+      fontSize: 16,
+      font: "BowlbyOneSC",
       marginLeft: 10,
-      marginTop: 3,
+      marginTop: 5,
       marginBottom: 2,
-      background: '#AAAAAA'
     },
     details: {
       fontSize: 12,
