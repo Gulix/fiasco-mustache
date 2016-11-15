@@ -8,6 +8,11 @@ function generate_pdf(playsetVM)
     styles: get_pdf_style()
   };
 
+  if (playsetVM.isCoverLoaded())
+  {
+    pdf_add_cover(docDefinition.content, playsetVM.playsetCover());
+  }
+
   pdf_add_description(docDefinition.content, playsetVM);
 
   // Generation of the Sections (Relationships, Needs, Locations, Objects)
@@ -58,6 +63,11 @@ function pdf_add_description(content, playsetVM)
 
     content.push({ text: descriptionBlocks[iBlock].content, style: blockStyle });
   }
+}
+
+function pdf_add_cover(content, dataUrl)
+{
+  content.push({ image: dataUrl, width: 500, pageBreak: 'after' });
 }
 
 /**

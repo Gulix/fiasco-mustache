@@ -8,6 +8,7 @@ function playsetVM() {
   self.playsetTeaser = new ko.observable('Playset Teaser');
   self.playsetDescription = new ko.observable('');
   self.playsetCredits = new ko.observable('#Credits\nMade via Fiasco-Mustache\n#Boilerplate\nFiasco is Bully Pulpit Games production.');
+  self.playsetCover = new ko.observable(null);
 
   /* Sections of Categories / Items */
   self.sections = new ko.observableArray([]);
@@ -56,6 +57,15 @@ function playsetVM() {
   self.isGeneratorVisible = ko.pureComputed(function() { return self.isSectionVisible('Generator'); }, self);
   self.isAboutVisible = ko.pureComputed(function() { return self.isSectionVisible('About'); }, self);
 
+  /********************/
+  /* Cover management */
+  /********************/
+  self.isCoverLoaded = ko.pureComputed(function() { return self.playsetCover() != null; });
+  self.isWithNoCover = ko.pureComputed(function() { return self.playsetCover() == null; });
+  self.loadCover = function() {
+    $("#cover-load").click();
+  }
+
   /*********************************/
   /* Loading from & Saving to Json */
   /*********************************/
@@ -100,7 +110,7 @@ function playsetVM() {
         }
       }
     }
-  };  
+  };
 
 }
 

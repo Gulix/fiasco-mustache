@@ -51,3 +51,19 @@
   margin-top: 3px;
   margin-bottom: 4px;
 }
+
+/* Cover of the Playset */
+.cover-without {
+  height: 200px;
+  width: 140px;
+  margin: 10px auto;
+  border: solid 2px black;
+}
+
+.cover-preview {
+  height: 200px;
+  width: 140px;
+  margin: 10px auto;
+  border: solid 2px black;
+  display: block;
+}
