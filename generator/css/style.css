@@ -67,3 +67,11 @@
   border: solid 2px black;
   display: block;
 }
+
+/* Titles */
+h1 {
+  font-family: 'Bowlby One SC', cursive;
+}
+h2 {
+  font-family: 'Bowlby One SC', cursive;
+}
