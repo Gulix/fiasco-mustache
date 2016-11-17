@@ -1,0 +1,36 @@
+@font-face {
+  font-family: 'icomoon';
+  src:  url('fonts/icomoon.eot?dpvkv3');
+  src:  url('fonts/icomoon.eot?dpvkv3#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?dpvkv3') format('truetype'),
+    url('fonts/icomoon.woff?dpvkv3') format('woff'),
+    url('fonts/icomoon.svg?dpvkv3#icomoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^="icomoon-"], [class*=" icomoon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'icomoon' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icomoon-floppy-disk:before {
+  content: "\e962";
+}
+.icomoon-upload2:before {
+  content: "\e9c6";
+}
+.icomoon-file-pdf:before {
+  content: "\eadf";
+}
+

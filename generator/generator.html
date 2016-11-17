@@ -9,6 +9,7 @@
    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen" />
    <link rel="stylesheet" href="css/style.css" />
+   <link rel="stylesheet" href="css/fonts.css" />
  </head>
 <body>
   <div class="container">
@@ -24,8 +25,19 @@
                 />
   		  </form>
 
-  		  <button type="button" data-bind="click: loadPlayset" class="btn btn-default">Load Playset</button>
-  		  <button type="button" data-bind="click: savePlayset" class="btn btn-default">Save Playset</button>
+        <div>
+    		  <button type="button" data-bind="click: loadPlayset" class="btn btn-default">
+            <span class=" icomoon-upload2" aria-hidden="true"></span> Load
+          </button>
+    		  <button type="button" data-bind="click: savePlayset" class="btn btn-default">
+            <span class="icomoon-floppy-disk" aria-hidden="true"></span>  Save
+          </button>
+        </div>
+        <div>
+    		  <button type="button" id='to-pdf-button' class="btn btn-default">
+            <span class="icomoon-file-pdf" aria-hidden="true"></span> Generate PDF
+          </button>
+        </div>
       </div>
     </div>
     <ul class="nav nav-tabs" data-bind="foreach: displayedSections">
@@ -209,8 +221,7 @@
 
      <!-- Generation by Mustache of the playset with the help of a template -->
      <div data-bind='visible: isGeneratorVisible' class='section'>
-    	<div class='row'><button type="button" id='to-pdf-button' class="btn btn-primary">Print to PDF !</button></div>
-        <div class='row'><p class='col-md-12'>Mustache template to use for the generation</p></div>
+    	<div class='row'><p class='col-md-12'>Mustache template to use for the generation</p></div>
     	<div class='row'><div class='col-md-10 col-md-offset-1'><textarea id='mustache_template' style='width:100%' rows='15' placeholder='Mustache template' required></textarea></div></div>
     	<div class='row'><button type="button" id='generate_button' class="btn btn-primary col-md-offset-8 col-md-4">Generate !</button></div>
      </div>
@@ -268,16 +279,6 @@ function generate_mustache()
 
   var blob = new Blob([Mustache.render(mustacheTemplate, jsonData)], {type: "text/plain;charset=utf-8"});
   saveAs(blob, "generated_template_" + $('#input_title').val());
-}
-
-function init_uicontrols()
-{
-  // Click on the buttons
-  $('#generate_button').click(function() { generate_mustache(); });
-  $('#to-pdf-button').click(function() { generate_pdf(); });
-
-  $('#savejson_button').click(function() { save_json(); });
-
 }
 
 $(function() {

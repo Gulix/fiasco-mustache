@@ -1,7 +1,7 @@
 <html>
  <head>
    <script src="../mustache.js"></script>
-   
+
    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
    <link href="../css/bootstrap.min.css" rel="stylesheet" media="screen" />
    <link rel="stylesheet" href="../style.css" />
@@ -16,7 +16,7 @@
         <p>You can then paste it to create/reply to a post in a forum using the BBCode format</p>
         <textarea id='bbcode_template' rows='6' class='col-md-12'></textarea>
     </div>
-    
+
     <h3>Scribus</h3>
     <div class='row'>
         <p><a href='http://wiki.scribus.net/canvas/Scribus'>Scribus</a> is an Open Source DTP (Desktop Publishing) application.</p>
@@ -28,7 +28,7 @@
         <p>Open the generated sla file with Scribus, verify and modify what you want, and you can generate a PDF for your playset !</p>
         <textarea id='scribus_template' rows='10' class='col-md-12'></textarea>
     </div
- 
+
  </div>
     <script src="http://code.jquery.com/jquery.js"></script>
     <script src="js/bootstrap.min.js"></script>
@@ -59,10 +59,10 @@ function load_template(template)
       }
       section.categories.push(category);
     }
-    
+
     view.sections.push(section);
   }
-  
+
   // Render the four "dice" sections, all the same
   return Mustache.render(template, view);
 }
@@ -80,7 +80,7 @@ function click_section(sectionIdx)
       $(sectionName).show();
       $(sectionTab).parent().addClass('active');
     }
-    else 
+    else
     {
       // Hiding the section
       $(sectionName).hide();
@@ -92,7 +92,7 @@ function click_section(sectionIdx)
 function get_generated_json()
 {
   var jsonData = { };
-  
+
   // Generic elements
   jsonData.title = $('#input_title').val();
   jsonData.subtitle = $('#input_subtitle').val();
@@ -100,8 +100,8 @@ function get_generated_json()
   jsonData.presentation = $('#input_presentation').val();
   jsonData.inspirations = $('#input_inspirations').val();
   jsonData.advices = $('#input_advices').val();
-  jsonData.credits = $('#input_credits').val();  
-  
+  jsonData.credits = $('#input_credits').val();
+
   // Tables of elements
   jsonData.sections = [];
   // Each section
@@ -118,7 +118,7 @@ function get_generated_json()
           jsonCategory.details = [];
           // Each detail
           for (var iDetail = 1; iDetail <= 6; iDetail++) {
-              jsonCategory.details[iDetail - 1] = { label: $('#sec' + iSection + '_cat' + iCategory + '_detail' + iDetail).val() };              
+              jsonCategory.details[iDetail - 1] = { label: $('#sec' + iSection + '_cat' + iCategory + '_detail' + iDetail).val() };
               // A unique property for the label
               jsonData["section"+iSection+"_category"+iCategory+"_detail"+iDetail] = jsonCategory.details[iDetail - 1].label;
           }
@@ -126,10 +126,10 @@ function get_generated_json()
       }
       jsonData.sections[iSection-1] = jsonSection;
   }
-  
+
   // All elements with a single property
-  
-  
+
+
   return jsonData;
 }
 
@@ -150,7 +150,7 @@ function save_json()
 }
 
 function load_files(evt) {
-    
+
     var files = evt.target.files;
 
     for (var i = 0, f; f = files[i]; i++) {
@@ -209,61 +209,25 @@ function update_section_labels()
    }
 }
 
-function init_uicontrols()
-{
-  // Click events on the sections
-  var lsIdx = [0, 1, 2, 3, 4, 5, 90, 99];
-  for(var idx=0; idx<=lsIdx.length; idx++) {    
-        var selector = "#select_section_" + lsIdx[idx];
-        $(selector).on('click', {id: lsIdx[idx]}, function (e) {
-            click_section(e.data.id);
-        });
-    }
-  click_section(0);
-  
-  // Click-events on the 'Display/Hide' buttons inside the Dice sections
-  $('.category_showhide').click(function() {
-    var isMasquer = $(this).children('span').hasClass('glyphicon-chevron-up');
-    if (isMasquer) {
-        $(this).parent().parent().siblings('.categoryDetail').hide();
-        $(this).html("<span class='glyphicon glyphicon-chevron-down' aria-hidden='true'></span>Display");  
-    } else {
-        $(this).parent().parent().siblings('.categoryDetail').show();
-        $(this).html("<span class='glyphicon glyphicon-chevron-up' aria-hidden='true'></span>Hide");  
-    }    
-  });
-  
-  // Click on the buttons
-  $('#generate_button').click(function() { generate_mustache(); });
-  $("#loadjson_button").click(function () { $("#file-load").click(); });
-  $("#file-load").change(load_files);  
-  $('#savejson_button').click(function() { save_json(); });
-  
-  // Focus out of the sections name input
-  for(var iSection=1; iSection <= 4; iSection++) {
-      $('#sec' + iSection).focusout(function() { update_section_labels(); });
-  }
-}
- 
+
 $(function() {
-   
+
    $.ajax({
       url: 'bbcode_template.txt',
-      success: function(template) { 
+      success: function(template) {
         $("#bbcode_template").val(template);
       },
       dataType: 'text'
    });
-  
+
    $.ajax({
       url: 'scribus_template.txt',
-      success: function(template) { 
+      success: function(template) {
         $("#scribus_template").val(template);
       },
       dataType: 'text'
    });
-  
+
 });
   </script>
 </html>
-
