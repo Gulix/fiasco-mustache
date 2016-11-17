@@ -47,7 +47,7 @@ function get_json_fromPlaysetVM(playsetVM, withDescriptionParts, withDescription
   }
 
   // All elements with a single property
-  jsonData.instasetup = get_instasetup_json();
+  jsonData.instasetup = get_instasetup_json(playsetVM);
 
   return jsonData;
 }
@@ -56,26 +56,9 @@ function get_json_fromPlaysetVM(playsetVM, withDescriptionParts, withDescription
  * Get the Insta-Setup informations
  * @return {json} the data in json format
  */
-function get_instasetup_json()
+function get_instasetup_json(playsetVM)
 {
-  var jsonIS = [];
-  /*for (var iSection = 1; iSection <= 4; iSection++)
-  {
-    if ( $("#insta-setup-section-choice" + iSection).length) {
-      var jsonSectionIS = { };
-      jsonSectionIS.id = $("#insta-setup-section-choice" + iSection).val();
-      jsonSectionIS.values = [];
-      for (var iElement = 1; iElement <= 4; iElement++)
-      {
-        if ($("#insta-setup-section-choice" + iSection + "-element-choice" + iElement).length) {
-          jsonSectionIS.values.push($("#insta-setup-section-choice" + iSection + "-element-choice" + iElement).val());
-        }
-      }
-
-      jsonIS.push(jsonSectionIS);
-    }
-  }*/
-  return jsonIS;
+  return playsetVM.instasetup().toJson();
 }
 
 /**

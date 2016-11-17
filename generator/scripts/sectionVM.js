@@ -38,4 +38,16 @@ function sectionVM(title, number) {
     }
     return listDetails;
   }, self);
+
+  /* Getting an Item of the Section from JSON object */
+  self.getItemFromJson = function(json) {
+    for (var iDetail = 0; iDetail < self.details().length; iDetail++) {
+      var detail = self.details()[iDetail];
+      if ((detail.number() == json.number) && (detail.categoryVM().number() == json.category))
+      {
+        return detail;
+      }
+    }
+    return null;
+  }
 }

@@ -3,28 +3,29 @@ function playsetVM() {
   var self = this;
 
   /* Introduction Section - Description of Playset */
-  self.playsetTitle = new ko.observable('Playset Title');
-  self.playsetSubtitle = new ko.observable('Playset Sub-Title');
-  self.playsetTeaser = new ko.observable('Playset Teaser');
-  self.playsetDescription = new ko.observable('');
-  self.playsetCredits = new ko.observable('#Credits\nMade via Fiasco-Mustache\n#Boilerplate\nFiasco is Bully Pulpit Games production.');
-  self.playsetCover = new ko.observable(null);
+  self.playsetTitle = ko.observable('Playset Title');
+  self.playsetSubtitle = ko.observable('Playset Sub-Title');
+  self.playsetTeaser = ko.observable('Playset Teaser');
+  self.playsetDescription = ko.observable('');
+  self.playsetCredits = ko.observable('#Credits\nMade via Fiasco-Mustache\n#Boilerplate\nFiasco is Bully Pulpit Games production.');
+  self.playsetCover = ko.observable(null);
 
   /* Sections of Categories / Items */
-  self.sections = new ko.observableArray([]);
+  self.sections = ko.observableArray([]);
   for(var iSection = 1; iSection <= 4; iSection++) {
     var section = new sectionVM('Section #' + iSection, iSection);
     self.sections.push(section);
   }
 
   /* Insta-Setup */
-  self.instasetup = ko.observable(new instasetupVM(self));
+  var setup = new instasetupVM(self);
+  self.instasetup = ko.observable(setup);
 
   /**********************/
   /* Sections of the UI */
   /**********************/
   /* Displaying-Hiding sections */
-  self.displayedSections = new ko.observableArray([]);
+  self.displayedSections = ko.observableArray([]);
   self.displayedSections.push(new displayedSectionVM('Introduction', 'Intro', true));
   for(var iSection = 0; iSection < self.sections().length; iSection++) {
     self.displayedSections.push(self.sections()[iSection].displayedSection());
@@ -56,6 +57,13 @@ function playsetVM() {
   self.isInstaSetupVisible = ko.pureComputed(function() { return self.isSectionVisible('InstaSetup'); }, self);
   self.isGeneratorVisible = ko.pureComputed(function() { return self.isSectionVisible('Generator'); }, self);
   self.isAboutVisible = ko.pureComputed(function() { return self.isSectionVisible('About'); }, self);
+
+  self.getSectionByNumber = function(number) {
+    for(var iSection = 0; iSection < self.sections().length; iSection++) {
+      if (self.sections()[iSection].number() == number) return self.sections()[iSection];
+    }
+    return null;
+  }
 
   /********************/
   /* Cover management */
@@ -109,6 +117,7 @@ function playsetVM() {
           }
         }
       }
+      self.instasetup().fromJson(jsonData.instasetup);
     }
   };
 
