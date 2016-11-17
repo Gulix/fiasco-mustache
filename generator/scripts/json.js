@@ -161,18 +161,21 @@ function json_add_description_part(jsonDescriptionParts, part, content)
 function divideText_intoBlocks_titleParagraph(text)
 {
   var blocks = [ ];
-  var arrayOfLines = text.match(/[^\r\n]+/g);
-  for (var iLine = 0; iLine < arrayOfLines.length; iLine++)
+  if ((text != null) && (text.length > 0))
   {
-    var sLine = arrayOfLines[iLine];
-    // Is this line a Title (starts with #)
-    if (sLine.substring(0, 1) === '#')
+    var arrayOfLines = text.match(/[^\r\n]+/g);
+    for (var iLine = 0; iLine < arrayOfLines.length; iLine++)
     {
-      blocks.push({ "content": sLine.substring(1).trim(), "type": "title" });
-    }
-    else // Or is this a new line of content ?
-    {
-      blocks.push({ "content": sLine, "type": "paragraph" });
+      var sLine = arrayOfLines[iLine];
+      // Is this line a Title (starts with #)
+      if (sLine.substring(0, 1) === '#')
+      {
+        blocks.push({ "content": sLine.substring(1).trim(), "type": "title" });
+      }
+      else // Or is this a new line of content ?
+      {
+        blocks.push({ "content": sLine, "type": "paragraph" });
+      }
     }
   }
   return blocks;
