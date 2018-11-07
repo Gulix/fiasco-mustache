@@ -1,0 +1,233 @@
+<html>
+ <head>
+   <script src="../mustache.js"></script>
+
+   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+   <link href="../css/bootstrap.min.css" rel="stylesheet" media="screen" />
+   <link rel="stylesheet" href="../style.css" />
+ </head>
+<body>
+  <div class="container">
+    <h1>Fiasco-Mustache</h1>
+    <h2>Templates examples</h2>
+    <h3>BBCode</h3>
+    <div class='row'>
+        <p>The following template can be used to generate your playset to a BBCode format.</p>
+        <p>You can then paste it to create/reply to a post in a forum using the BBCode format</p>
+        <textarea id='bbcode_template' rows='6' class='col-md-12'></textarea>
+    </div>
+
+    <h3>Scribus</h3>
+    <div class='row'>
+        <p><a href='http://wiki.scribus.net/canvas/Scribus'>Scribus</a> is an Open Source DTP (Desktop Publishing) application.</p>
+        <p>The following template has been made to create a Playset that match the "official layout" for Fiasco Playsets.</p>
+        <p>First, download and install Scribus on your computer.</p>
+        <p>Then, download <a href='scribus_fiasco_mustache_template.7z'>this archive</a>, and unpack it in any directory you want.</p>
+        <p>Install the 'Hitchcock_ES' font provided in the archive.</p>
+        <p>Use the template besides to generate a text file, that you'll save with a .sla extension, inside the directory of the archive (with the diceX.png files).</p>
+        <p>Open the generated sla file with Scribus, verify and modify what you want, and you can generate a PDF for your playset !</p>
+        <textarea id='scribus_template' rows='10' class='col-md-12'></textarea>
+    </div
+
+ </div>
+    <script src="http://code.jquery.com/jquery.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+ </body>
+ <script>
+
+
+/* Rendering functions */
+function load_template(template)
+{
+  var view = {
+    sections: []
+  };
+  for(var iSection=1; iSection<=4; iSection++) {
+    var section = {
+      categories: [],
+      sectionIdx: iSection
+    };
+    for(var iCategory=1; iCategory<=6; iCategory++)
+    {
+      var category = {
+        details: [],
+        categoryIdx: iCategory
+      };
+      for(var iDetail=1; iDetail<=6; iDetail++)
+      {
+        category.details.push(iDetail);
+      }
+      section.categories.push(category);
+    }
+
+    view.sections.push(section);
+  }
+
+  // Render the four "dice" sections, all the same
+  return Mustache.render(template, view);
+}
+
+function click_section(sectionIdx)
+{
+  var lsIdx = [0, 1, 2, 3, 4, 5, 90, 99];
+  for(var idx=0; idx<=lsIdx.length; idx++)
+  {
+    var sectionName = '#section' + lsIdx[idx];
+    var sectionTab = '#select_section_' + lsIdx[idx];
+    if (lsIdx[idx] == sectionIdx)
+    {
+      // Showing the section
+      $(sectionName).show();
+      $(sectionTab).parent().addClass('active');
+    }
+    else
+    {
+      // Hiding the section
+      $(sectionName).hide();
+      $(sectionTab).parent().removeClass('active');
+    }
+  }
+}
+
+function get_generated_json()
+{
+  var jsonData = { };
+
+  // Generic elements
+  jsonData.title = $('#input_title').val();
+  jsonData.subtitle = $('#input_subtitle').val();
+  jsonData.teaser = $('#input_teaser').val();
+  jsonData.presentation = $('#input_presentation').val();
+  jsonData.inspirations = $('#input_inspirations').val();
+  jsonData.advices = $('#input_advices').val();
+  jsonData.credits = $('#input_credits').val();
+
+  // Tables of elements
+  jsonData.sections = [];
+  // Each section
+  for(var iSection = 1; iSection <= 4; iSection++) {
+      var jsonSection = { label: $('#sec'+iSection).val() };
+      // A unique property for the label
+      jsonData["section"+iSection] = jsonSection.label;
+      jsonSection.categories = [];
+      // Each category
+      for (var iCategory = 1; iCategory <= 6; iCategory++) {
+          var jsonCategory = { label: $('#sec' + iSection + '_cat' + iCategory).val() };
+          // A unique property for the label
+          jsonData["section"+iSection+"_category"+iCategory] = jsonCategory.label;
+          jsonCategory.details = [];
+          // Each detail
+          for (var iDetail = 1; iDetail <= 6; iDetail++) {
+              jsonCategory.details[iDetail - 1] = { label: $('#sec' + iSection + '_cat' + iCategory + '_detail' + iDetail).val() };
+              // A unique property for the label
+              jsonData["section"+iSection+"_category"+iCategory+"_detail"+iDetail] = jsonCategory.details[iDetail - 1].label;
+          }
+          jsonSection.categories[iCategory - 1] = jsonCategory;
+      }
+      jsonData.sections[iSection-1] = jsonSection;
+  }
+
+  // All elements with a single property
+
+
+  return jsonData;
+}
+
+function generate_mustache()
+{
+  // The mustache template
+  var mustacheTemplate = $('#mustache_template').val();
+  var jsonData = get_generated_json();
+
+  var blob = new Blob([Mustache.render(mustacheTemplate, jsonData)], {type: "text/plain;charset=utf-8"});
+  saveAs(blob, "generated_template_" + $('#input_title').val());
+}
+
+function save_json()
+{
+  var blob = new Blob([JSON.stringify(get_generated_json())], {type: "text/plain;charset=utf-8"});
+  saveAs(blob, "fiasco_template_" + $('#input_title').val() + ".json");
+}
+
+function load_files(evt) {
+
+    var files = evt.target.files;
+
+    for (var i = 0, f; f = files[i]; i++) {
+        var reader = new FileReader();
+
+        reader.onload = function (reader) {
+            var data = JSON.parse(this.result);
+            load_from_json(data);
+        };
+
+        reader.readAsText(f);
+    }
+
+    // Reset file input
+    $("#file-load-form")[0].reset();
+}
+
+function load_from_json(jsonData)
+{
+    // Introduction elements
+    $('#input_title').val(jsonData.title);
+    $('#input_subtitle').val(jsonData.subtitle);
+    $('#input_teaser').val(jsonData.teaser);
+    $('#input_presentation').val(jsonData.presentation);
+    $('#input_inspirations').val(jsonData.inspirations);
+    $('#input_advices').val(jsonData.advices);
+    $('#input_credits').val(jsonData.credits);
+
+    // Elements from a section
+    for(var iSection = 1; iSection <= 4; iSection++) {
+      $('#sec'+iSection).val(jsonData.sections[iSection-1].label);
+      // Each category
+      for (var iCategory = 1; iCategory <= 6; iCategory++) {
+          $('#sec' + iSection + '_cat' + iCategory).val(jsonData.sections[iSection-1].categories[iCategory-1].label);
+          // Each detail
+          for (var iDetail = 1; iDetail <= 6; iDetail++) {
+              $('#sec' + iSection + '_cat' + iCategory + '_detail' + iDetail).val(
+                  jsonData.sections[iSection-1].categories[iCategory-1].details[iDetail-1].label);
+          }
+      }
+    }
+    update_section_labels();
+}
+
+function update_section_labels()
+{
+   for(var iSection=1; iSection <= 4; iSection++)
+   {
+      // The section designation goes to the tab
+      var designation = $('#sec'+iSection).val();
+      if (designation.length == 0) {
+          $('#select_section_' + iSection).html('Section #' + iSection);
+      } else {
+          $('#select_section_' + iSection).html(designation);
+      }
+   }
+}
+
+
+$(function() {
+
+   $.ajax({
+      url: 'bbcode_template.txt',
+      success: function(template) {
+        $("#bbcode_template").val(template);
+      },
+      dataType: 'text'
+   });
+
+   $.ajax({
+      url: 'scribus_template.txt',
+      success: function(template) {
+        $("#scribus_template").val(template);
+      },
+      dataType: 'text'
+   });
+
+});
+  </script>
+</html>
