@@ -11,6 +11,7 @@ function get_json_fromPlaysetVM(playsetVM, withDescriptionParts, withDescription
   jsonData.title = playsetVM.playsetTitle();
   jsonData.subtitle = playsetVM.playsetSubtitle();
   jsonData.teaser = playsetVM.playsetTeaser();
+  jsonData.cover = playsetVM.playsetCover();
 
   // Description is one field
   json_set_description(jsonData, playsetVM.playsetDescription(), withDescriptionParts, withDescriptionParagraphs);

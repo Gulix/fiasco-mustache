@@ -93,6 +93,9 @@ function playsetVM() {
       self.playsetTitle(jsonData.title);
       self.playsetSubtitle(jsonData.subtitle);
       self.playsetTeaser(jsonData.teaser);
+      if (jsonData.cover != undefined) {
+        self.playsetCover(jsonData.cover);
+      }
       if (jsonData.description != undefined) {
         self.playsetDescription(jsonData.description);
       } else { // Load old version of Playsets
