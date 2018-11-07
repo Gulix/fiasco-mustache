@@ -22,6 +22,8 @@ function generate_pdf(playsetVM)
     pdf_add_section(docDefinition.content, currentSection, playsetVM.playsetTeaser(), playsetVM.playsetTitle());
   }
 
+  pdf_add_instasetup(docDefinition.content, playsetVM);
+
   var customFilename = "Fiasco Playset - " + playsetVM.playsetTitle() + ".pdf";
   pdfMake.createPdf(docDefinition).download(customFilename);
 }
@@ -106,6 +108,54 @@ function pdf_add_section(content, sectionVM, playsetTeaser, playsetTitle)
 }
 
 /**
+ * Add the Insta-Setup Section part for the PDF generation
+ * @param {json} content       Json data for pdfmake generation
+ * @param {json} playsetVM     ViewModel of the Playset
+ */
+function pdf_add_instasetup(content, playsetVM)
+{
+  content.push({ text: playsetVM.playsetTitle(), style: 'titleOnHeader', pageBreak: 'before', pageOrientation: 'portrait' });
+  content.push({ text: "Insta-Setup", style: 'title' });
+
+  // First section
+  content.push({ text: playsetVM.instasetup().firstSection().title(), style: 'instaSetupSection' });
+  content.push({ text: "For 3 players ...", style: 'category' });
+  pdf_add_instasetup_detail(content, playsetVM.instasetup().firstSectionChoice1());
+  pdf_add_instasetup_detail(content, playsetVM.instasetup().firstSectionChoice2());
+  pdf_add_instasetup_detail(content, playsetVM.instasetup().firstSectionChoice3());
+  content.push({ text: "For 4 players, add ...", style: 'category' });
+  pdf_add_instasetup_detail(content, playsetVM.instasetup().firstSectionChoice4());
+  content.push({ text: "For 5 players, add ...", style: 'category' });
+  pdf_add_instasetup_detail(content, playsetVM.instasetup().firstSectionChoice5());
+
+  // Second section
+  content.push({ text: playsetVM.instasetup().secondSection().title(), style: 'instaSetupSection' });
+  content.push({ text: "For 3 players ...", style: 'category' });
+  pdf_add_instasetup_detail(content, playsetVM.instasetup().secondSectionChoice1());
+  content.push({ text: "For 4 or 5 players, add ...", style: 'category' });
+  pdf_add_instasetup_detail(content, playsetVM.instasetup().secondSectionChoice2());
+
+  // Third section
+  content.push({ text: playsetVM.instasetup().thirdSection().title(), style: 'instaSetupSection' });
+  content.push({ text: "For 3 or 4 players ...", style: 'category' });
+  pdf_add_instasetup_detail(content, playsetVM.instasetup().thirdSectionChoice1());
+  content.push({ text: "For 5 players, add ...", style: 'category' });
+  pdf_add_instasetup_detail(content, playsetVM.instasetup().thirdSectionChoice2());
+
+  // Fourth section
+  content.push({ text: playsetVM.instasetup().fourthSection().title(), style: 'instaSetupSection' });
+  content.push({ text: "For any number of players ...", style: 'category' });
+  pdf_add_instasetup_detail(content, playsetVM.instasetup().fourthSectionChoice1());
+
+  content.push({ text: "... " + playsetVM.playsetTeaser(), style: 'sectionFooter' });
+}
+
+function pdf_add_instasetup_detail(content, detail)
+{
+  content.push({ text: detail.categoryVM().title() + " - " + detail.textValue(), style: 'details' });
+}
+
+/**
  * Get the style for the pdfmake generation
  * @return {json} Json for pdfmake styling
  */
@@ -132,6 +182,13 @@ function get_pdf_style()
       color: '#8B1F1C',
       alignment: 'right',
       marginTop: 5
+    },
+    instaSetupSection: {
+      fontSize: 26,
+      font: "BowlbyOneSC",
+      marginBottom: 0,
+      marginTop: 5,
+      color: '#8B1F1C'
     },
     category: {
       fontSize: 16,
