@@ -156,6 +156,11 @@ function divideText_intoBlocks_titleParagraph(text)
       {
         blocks.push({ "content": sLine.substring(1).trim(), "type": "title" });
       }
+      // Is this line a Page-Break ? (//)
+      else if (sLine.substring(0, 2) === '//')
+      {
+        blocks.push({ "content": '', "type": "pageBreaker" });
+      }
       else // Or is this a new line of content ?
       {
         blocks.push({ "content": sLine, "type": "paragraph" });

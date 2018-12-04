@@ -25,6 +25,7 @@ function generate_pdf(playsetVM)
   pdf_add_instasetup(docDefinition.content, playsetVM);
 
   var customFilename = "Fiasco Playset - " + playsetVM.playsetTitle() + ".pdf";
+  console.log(JSON.stringify(docDefinition));
   pdfMake.createPdf(docDefinition).download(customFilename);
 }
 
@@ -62,8 +63,11 @@ function pdf_add_description(content, playsetVM)
         blockStyle = 'description';
         break;
     }
-
-    content.push({ text: descriptionBlocks[iBlock].content, style: blockStyle });
+    if (descriptionBlocks[iBlock].type == 'pageBreaker') {
+      content.push({ text: '', pageBreak: "after", pageOrientation: "portrait" });
+    } else {
+      content.push({ text: descriptionBlocks[iBlock].content, style: blockStyle });
+    }
   }
 }
 
