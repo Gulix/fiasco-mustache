@@ -28,6 +28,9 @@
   		  </form>
 
         <div>
+          <select class="form-control" id="selLanguages"
+            data-bind="options: languageManager.languages(), optionsText: 'label', optionsValue: 'key', value: languageManager.lngKey">
+          </select>
     		  <button type="button" data-bind="click: loadPlayset" class="btn btn-default">
             <span class=" icomoon-upload2" aria-hidden="true"></span> Load
           </button>
@@ -159,17 +162,17 @@
          </div></div>
 
          <div class='row'><div class='col-md-8 col-md-offset-2'>
-             <h3>For three players</h3>
+             <h3 data-bind="text: playsetVM().languageManager.current().instasetup_for3"></h3>
              <select class='form-control instasetup-element-selection'
                      data-bind="options: firstSection().details(), optionsText: 'titleWithCategory', value: firstSectionChoice1"></select>
              <select class='form-control instasetup-element-selection'
                      data-bind="options: firstSection().details(), optionsText: 'titleWithCategory', value: firstSectionChoice2"></select>
              <select class='form-control instasetup-element-selection'
                      data-bind="options: firstSection().details(), optionsText: 'titleWithCategory', value: firstSectionChoice3"></select>
-             <h3>For four players, add ...</h3>
+             <h3 data-bind="text: playsetVM().languageManager.current().instasetup_for4"></h3>
              <select class='form-control instasetup-element-selection'
                      data-bind="options: firstSection().details(), optionsText: 'titleWithCategory', value: firstSectionChoice4"></select>
-             <h3>For five players, add ...</h3>
+             <h3 data-bind="text: playsetVM().languageManager.current().instasetup_for5"></h3>
              <select class='form-control instasetup-element-selection' id='insta-setup-section-choice1-element-choice5'
                      data-bind="options: firstSection().details(), optionsText: 'titleWithCategory', value: firstSectionChoice5"></select>
          </div></div>
@@ -181,10 +184,10 @@
          </div></div>
 
          <div class='row'><div class='col-md-8 col-md-offset-2'>
-             <h3>For three players</h3>
+             <h3 data-bind="text: playsetVM().languageManager.current().instasetup_for3"></h3>
              <select class='form-control instasetup-element-selection'
                      data-bind="options: secondSection().details(), optionsText: 'titleWithCategory', value: secondSectionChoice1"></select>
-             <h3>For four or five players, add ...</h3>
+             <h3 data-bind="text: playsetVM().languageManager.current().instasetup_for45"></h3>
              <select class='form-control instasetup-element-selection'
                      data-bind="options: secondSection().details(), optionsText: 'titleWithCategory', value: secondSectionChoice2"></select>
          </div></div>
@@ -197,10 +200,10 @@
 
          <div class='row'><div class='col-md-8 col-md-offset-2'>
 
-             <h3>For three or four players</h3>
+             <h3 data-bind="text: playsetVM().languageManager.current().instasetup_for34"></h3>
              <select class='form-control instasetup-element-selection'
                      data-bind="options: thirdSection().details(), optionsText: 'titleWithCategory', value: thirdSectionChoice1"></select>
-             <h3>For five players, add ...</h3>
+             <h3 data-bind="text: playsetVM().languageManager.current().instasetup_for5"></h3>
              <select class='form-control instasetup-element-selection'
                      data-bind="options: thirdSection().details(), optionsText: 'titleWithCategory', value: thirdSectionChoice2"></select>
          </div></div>
@@ -213,7 +216,7 @@
 
          <div class='row'><div class='col-md-8 col-md-offset-2'>
 
-             <h3>For three, four or five players</h3>
+             <h3 data-bind="text: playsetVM().languageManager.current().instasetup_forany"></h3>
              <select class='form-control instasetup-element-selection'
                      data-bind="options: fourthSection().details(), optionsText: 'titleWithCategory', value: fourthSectionChoice1"></select>
          </div></div>
@@ -268,6 +271,10 @@
     <script src="js/knockout-3.4.0.js"></script>
     <script src="scripts/json.js"></script>
     <script src="scripts/pdf.js"></script>
+    <script src="scripts/datastorage.js"></script>
+    <script src="scripts/language.js"></script>
+    <script src="languages/fr.js"></script>
+    <script src="languages/en.js"></script>
     <!-- ViewModels for Knockout -->
     <script src="scripts/itemVM.js"></script>
     <script src="scripts/categoryVM.js"></script>
@@ -290,7 +297,7 @@ function generate_mustache()
 
 $(function() {
 
-   var viewModel = new playsetVM();
+   var viewModel = new playsetVM(langManager);
    ko.applyBindings(viewModel);
 
    $("#file-load").change(function (evt) {

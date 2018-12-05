@@ -1,6 +1,8 @@
-function playsetVM() {
+function playsetVM(lngManager) {
 
   var self = this;
+
+  self.languageManager = lngManager;
 
   /* Introduction Section - Description of Playset */
   self.playsetTitle = ko.observable('Playset Title');
@@ -30,7 +32,7 @@ function playsetVM() {
   for(var iSection = 0; iSection < self.sections().length; iSection++) {
     self.displayedSections.push(self.sections()[iSection].displayedSection());
   }
-  self.displayedSections.push(new displayedSectionVM('Insta-Setup', 'InstaSetup', false));
+  self.displayedSections.push(new displayedSectionVM(self.languageManager.current().instasetup_title, 'InstaSetup', false));
   self.displayedSections.push(new displayedSectionVM('Generator', 'Generator', false));
   self.displayedSections.push(new displayedSectionVM('About', 'About', false));
 

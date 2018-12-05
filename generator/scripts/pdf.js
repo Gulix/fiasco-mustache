@@ -119,36 +119,36 @@ function pdf_add_section(content, sectionVM, playsetTeaser, playsetTitle)
 function pdf_add_instasetup(content, playsetVM)
 {
   content.push({ text: playsetVM.playsetTitle(), style: 'titleOnHeader', pageBreak: 'before', pageOrientation: 'portrait' });
-  content.push({ text: "Insta-Setup", style: 'title' });
+  content.push({ text: playsetVM.languageManager.current().instasetup_title, style: 'title' });
 
   // First section
   content.push({ text: playsetVM.instasetup().firstSection().title(), style: 'instaSetupSection' });
-  content.push({ text: "For 3 players ...", style: 'category' });
+  content.push({ text: playsetVM.languageManager.current().instasetup_for3, style: 'category' });
   pdf_add_instasetup_detail(content, playsetVM.instasetup().firstSectionChoice1());
   pdf_add_instasetup_detail(content, playsetVM.instasetup().firstSectionChoice2());
   pdf_add_instasetup_detail(content, playsetVM.instasetup().firstSectionChoice3());
-  content.push({ text: "For 4 players, add ...", style: 'category' });
+  content.push({ text: playsetVM.languageManager.current().instasetup_for4, style: 'category' });
   pdf_add_instasetup_detail(content, playsetVM.instasetup().firstSectionChoice4());
-  content.push({ text: "For 5 players, add ...", style: 'category' });
+  content.push({ text: playsetVM.languageManager.current().instasetup_for5, style: 'category' });
   pdf_add_instasetup_detail(content, playsetVM.instasetup().firstSectionChoice5());
 
   // Second section
   content.push({ text: playsetVM.instasetup().secondSection().title(), style: 'instaSetupSection' });
-  content.push({ text: "For 3 players ...", style: 'category' });
+  content.push({ text: playsetVM.languageManager.current().instasetup_for3, style: 'category' });
   pdf_add_instasetup_detail(content, playsetVM.instasetup().secondSectionChoice1());
-  content.push({ text: "For 4 or 5 players, add ...", style: 'category' });
+  content.push({ text: playsetVM.languageManager.current().instasetup_for45, style: 'category' });
   pdf_add_instasetup_detail(content, playsetVM.instasetup().secondSectionChoice2());
 
   // Third section
   content.push({ text: playsetVM.instasetup().thirdSection().title(), style: 'instaSetupSection' });
-  content.push({ text: "For 3 or 4 players ...", style: 'category' });
+  content.push({ text: playsetVM.languageManager.current().instasetup_for34, style: 'category' });
   pdf_add_instasetup_detail(content, playsetVM.instasetup().thirdSectionChoice1());
-  content.push({ text: "For 5 players, add ...", style: 'category' });
+  content.push({ text: playsetVM.languageManager.current().instasetup_for5, style: 'category' });
   pdf_add_instasetup_detail(content, playsetVM.instasetup().thirdSectionChoice2());
 
   // Fourth section
   content.push({ text: playsetVM.instasetup().fourthSection().title(), style: 'instaSetupSection' });
-  content.push({ text: "For any number of players ...", style: 'category' });
+  content.push({ text: playsetVM.languageManager.current().instasetup_forany, style: 'category' });
   pdf_add_instasetup_detail(content, playsetVM.instasetup().fourthSectionChoice1());
 
   content.push({ text: "... " + playsetVM.playsetTeaser(), style: 'sectionFooter' });
