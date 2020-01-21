@@ -167,19 +167,18 @@ function pdf_add_instasetup_detail(content, detail)
 function pdf_add_cards(content)
 {
   var staticCard = svgCard();
-  var table = { table: { widths: [249, 249], heights: [178, 178, 178, 178], body: [ ] } };
+  //var table = { table: { widths: [249, 249], heights: [178, 178, 178, 178], body: [ ] } };
   for(var iLine = 0; iLine < 4; iLine++)
   {
-    var line = [ ];
+    //var line = [ ];
+    var line = { columns: [ ]};
     for(var iCol = 0; iCol < 2; iCol++)
     {
-      var card = { svg: staticCard, fit: [249, 178 ] };
-      line.push(card);
+      var card = { width: 249, svg: staticCard, fit: [249, 178 ] };
+      line.columns.push(card);
     }
-    table.table.body.push(line);
+    content.push(line);
   }
-
-  content.push(table);
 }
 
 /*******************************/
