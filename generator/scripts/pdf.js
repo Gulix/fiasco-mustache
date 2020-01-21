@@ -24,6 +24,8 @@ function generate_pdf(playsetVM)
 
   pdf_add_instasetup(docDefinition.content, playsetVM);
 
+  pdf_add_cards(docDefinition.content);
+
   var customFilename = "Fiasco Playset - " + playsetVM.playsetTitle() + ".pdf";
   console.log(JSON.stringify(docDefinition));
   pdfMake.createPdf(docDefinition).download(customFilename);
@@ -158,6 +160,31 @@ function pdf_add_instasetup_detail(content, detail)
 {
   content.push({ text: detail.categoryVM().title() + " - " + detail.textValue(), style: 'details' });
 }
+
+/******************************************/
+/*** Generating the Cards for Fiasco V2 ***/
+/******************************************/
+function pdf_add_cards(content)
+{
+  var staticCard = svgCard();
+  var table = { table: { widths: [249, 249], heights: [178, 178, 178, 178], body: [ ] } };
+  for(var iLine = 0; iLine < 4; iLine++)
+  {
+    var line = [ ];
+    for(var iCol = 0; iCol < 2; iCol++)
+    {
+      var card = { svg: staticCard, fit: [249, 178 ] };
+      line.push(card);
+    }
+    table.table.body.push(line);
+  }
+
+  content.push(table);
+}
+
+/*******************************/
+/*** End for Fiasco v2 Cards ***/
+/*******************************/
 
 /**
  * Get the style for the pdfmake generation
